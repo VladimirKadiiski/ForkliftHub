@@ -1,7 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace ForkliftHub.Models
 {
+    [Description("Category of machine")]
     public class Category
     {
         [Key]

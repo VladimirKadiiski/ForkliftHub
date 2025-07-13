@@ -1,7 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace ForkliftHub.Models
 {
+    [Description("Machine as a whole product")]
     public class Product
     {
         [Key]

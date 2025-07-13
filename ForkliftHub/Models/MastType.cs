@@ -1,7 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace ForkliftHub.Models
 {
+    [Description("Type of mast of machine")]
     public class MastType
     {
         [Key]

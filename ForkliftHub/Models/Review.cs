@@ -1,7 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace ForkliftHub.Models
 {
+    [Description("Reveiws for new machines")]
     public class Review
     {
         [Key]
