@@ -28,12 +28,48 @@ namespace ForkliftHub.Data
                 new ProductType { Id = 2, Name = "Used" }
             );
 
-            // Configure Delete Behaviors
+            // Configure Delete Behaviors and FK
             modelBuilder.Entity<Product>()
                 .HasMany(p => p.Reviews)
                 .WithOne(r => r.Product)
                 .HasForeignKey(r => r.ProductId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Product>()
+                .HasOne(p => p.Model)
+                .WithMany(m => m.Products)
+                .HasForeignKey(p => p.ModelId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Product>()
+                .HasOne(p => p.Model)
+                .WithMany()
+                .HasForeignKey(p => p.ModelId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Product>()
+                .HasOne(p => p.Category)
+                .WithMany()
+                .HasForeignKey(p => p.CategoryId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Product>()
+                .HasOne(p => p.Engine)
+                .WithMany()
+                .HasForeignKey(p => p.EngineId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Product>()
+                .HasOne(p => p.MastType)
+                .WithMany()
+                .HasForeignKey(p => p.MastTypeId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Product>()
+                .HasOne(p => p.ProductType)
+                .WithMany()
+                .HasForeignKey(p => p.ProductTypeId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
