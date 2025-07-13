@@ -1,9 +1,10 @@
-﻿using System.ComponentModel;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace ForkliftHub.Models
 {
-    [Description("Machine as a whole product")]
+    [Description("Individual Machine")]
     public class Product
     {
         [Key]
@@ -33,9 +34,11 @@ namespace ForkliftHub.Models
         public int MastTypeId { get; set; }
         public MastType MastType { get; set; } = null!;
 
+        [Precision(18, 2)]
         [Range(0, 10000)]
         public decimal LiftingHeight { get; set; }
 
+        [Precision(18, 2)]
         [Range(0, 10000)]
         public decimal ClosedHeight { get; set; }
 
@@ -46,6 +49,7 @@ namespace ForkliftHub.Models
         [Url]
         public string? ImageUrl { get; set; }
 
+        [Precision(18, 2)]
         [Range(0.01, 1000000)]
         public decimal Price { get; set; }
 

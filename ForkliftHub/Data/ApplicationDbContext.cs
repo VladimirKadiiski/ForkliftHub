@@ -28,7 +28,7 @@ namespace ForkliftHub.Data
                 new ProductType { Id = 2, Name = "Used" }
             );
 
-            // Configure Delete Behaviors and FK
+            // Configure Delete Behaviors and FK via FluentAPI
             modelBuilder.Entity<Product>()
                 .HasMany(p => p.Reviews)
                 .WithOne(r => r.Product)
@@ -38,12 +38,6 @@ namespace ForkliftHub.Data
             modelBuilder.Entity<Product>()
                 .HasOne(p => p.Model)
                 .WithMany(m => m.Products)
-                .HasForeignKey(p => p.ModelId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Product>()
-                .HasOne(p => p.Model)
-                .WithMany()
                 .HasForeignKey(p => p.ModelId)
                 .OnDelete(DeleteBehavior.Restrict);
 
@@ -70,6 +64,8 @@ namespace ForkliftHub.Data
                 .WithMany()
                 .HasForeignKey(p => p.ProductTypeId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+
         }
     }
 }
