@@ -49,4 +49,22 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
 
-app.Run();
+
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+    string[] roles = { "Admin", "Customer" };
+
+    foreach (var role in roles)
+    {
+        var roleExists = await roleManager.RoleExistsAsync(role);
+        if (!roleExists)
+        {
+            await roleManager.CreateAsync(new IdentityRole(role));
+        }
+    }
+}
+
+
+await app.RunAsync();
