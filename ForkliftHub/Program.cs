@@ -64,7 +64,40 @@ using (var scope = app.Services.CreateScope())
             await roleManager.CreateAsync(new IdentityRole(role));
         }
     }
-}
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
+    // Set admin credentials
+    string adminEmail = "admin@forklifthub.com";
+    string adminPassword = "Admin@123"; 
+
+    // Check if the admin user exists
+    var adminUser = await userManager.FindByEmailAsync(adminEmail);
+    if (adminUser == null)
+    {
+        // Create the admin user
+        adminUser = new ApplicationUser
+        {
+            UserName = adminEmail,
+            Email = adminEmail,
+            EmailConfirmed = false // in production please enable email confirmation!
+        };
+
+        var result = await userManager.CreateAsync(adminUser, adminPassword);
+        if (result.Succeeded)
+        {
+            await userManager.AddToRoleAsync(adminUser, "Admin");
+        }
+    }
+    else
+    {
+        // Ensure user is in Admin role (in case someone removed it manually)
+        var isInRole = await userManager.IsInRoleAsync(adminUser, "Admin");
+        if (!isInRole)
+        {
+            await userManager.AddToRoleAsync(adminUser, "Admin");
+        }
+    }
+
+}
 
 await app.RunAsync();
