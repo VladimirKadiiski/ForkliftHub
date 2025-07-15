@@ -4,19 +4,16 @@ using ForkliftHub.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace ForkliftHub.Data.Migrations
+namespace ForkliftHub.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250713165325_InitialMigration")]
-    partial class InitialMigration
+    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -43,6 +40,9 @@ namespace ForkliftHub.Data.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("FullName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -106,6 +106,28 @@ namespace ForkliftHub.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Brands");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Toyota"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Hyster"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Linde"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "BT"
+                        });
                 });
 
             modelBuilder.Entity("ForkliftHub.Models.Category", b =>
@@ -124,6 +146,28 @@ namespace ForkliftHub.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Electric Pallet Truck"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Stacker"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Reach Truck"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Forklift Truck"
+                        });
                 });
 
             modelBuilder.Entity("ForkliftHub.Models.Engine", b =>
@@ -134,7 +178,7 @@ namespace ForkliftHub.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Name")
+                    b.Property<string>("Type")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
@@ -142,6 +186,23 @@ namespace ForkliftHub.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Engines");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Type = "Diesel"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Type = "Electric"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Type = "LPG"
+                        });
                 });
 
             modelBuilder.Entity("ForkliftHub.Models.MastType", b =>
@@ -160,6 +221,23 @@ namespace ForkliftHub.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("MastTypes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Simplex"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "2-Stage"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "3-Stage"
+                        });
                 });
 
             modelBuilder.Entity("ForkliftHub.Models.Model", b =>
@@ -183,6 +261,32 @@ namespace ForkliftHub.Data.Migrations
                     b.HasIndex("BrandId");
 
                     b.ToTable("Models");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            BrandId = 1,
+                            Name = "8FBEKT20"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            BrandId = 2,
+                            Name = "H3.0FT"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            BrandId = 3,
+                            Name = "H25D"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            BrandId = 1,
+                            Name = "02-8FGF25"
+                        });
                 });
 
             modelBuilder.Entity("ForkliftHub.Models.Product", b =>
@@ -254,6 +358,40 @@ namespace ForkliftHub.Data.Migrations
                     b.HasIndex("ProductTypeId");
 
                     b.ToTable("Products");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            BrandId = 1,
+                            CategoryId = 4,
+                            ClosedHeight = 0m,
+                            Description = "High efficiency 3-wheel electric forklift.",
+                            EngineId = 2,
+                            LiftingHeight = 0m,
+                            MastTypeId = 2,
+                            ModelId = 1,
+                            Name = "Toyota Electric Forklift",
+                            Price = 32000m,
+                            ProductTypeId = 1,
+                            Stock = 0
+                        },
+                        new
+                        {
+                            Id = 2,
+                            BrandId = 2,
+                            CategoryId = 4,
+                            ClosedHeight = 0m,
+                            Description = "Reliable used diesel forklift for heavy lifting.",
+                            EngineId = 1,
+                            LiftingHeight = 0m,
+                            MastTypeId = 1,
+                            ModelId = 2,
+                            Name = "Used Hyster Diesel Forklift",
+                            Price = 14000m,
+                            ProductTypeId = 2,
+                            Stock = 0
+                        });
                 });
 
             modelBuilder.Entity("ForkliftHub.Models.ProductType", b =>

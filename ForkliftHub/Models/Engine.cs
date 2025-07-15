@@ -11,6 +11,6 @@ namespace ForkliftHub.Models
 
         [Required]
         [StringLength(100)]
-        public string Name { get; set; } = null!;
+        public string Type { get; set; } = null!;
     }
 }
