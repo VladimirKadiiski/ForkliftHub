@@ -10,7 +10,7 @@ namespace ForkliftHub.Data
             : base(options) { }
 
         public DbSet<Brand> Brands { get; set; }
-        public DbSet<Model> Models { get; set; }
+        public DbSet<MachineModel> MachineModels{ get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Engine> Engines { get; set; }
         public DbSet<MastType> MastTypes { get; set; }
@@ -32,11 +32,11 @@ namespace ForkliftHub.Data
             );
 
             // Seed Models 
-            modelBuilder.Entity<Model>().HasData(
-                new Model { Id = 1, Name = "8FBEKT20", BrandId = 1 },
-                new Model { Id = 2, Name = "H3.0FT", BrandId = 2 },
-                new Model { Id = 3, Name = "H25D", BrandId = 3 },
-                new Model { Id = 4, Name = "02-8FGF25", BrandId = 1 }
+            modelBuilder.Entity<MachineModel>().HasData(
+                new MachineModel { Id = 1, Name = "8FBEKT20", BrandId = 1 },
+                new MachineModel { Id = 2, Name = "H3.0FT", BrandId = 2 },
+                new MachineModel { Id = 3, Name = "H25D", BrandId = 3 },
+                new MachineModel { Id = 4, Name = "02-8FGF25", BrandId = 1 }
             );
 
             // Seed Categories

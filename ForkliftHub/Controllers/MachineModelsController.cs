@@ -8,11 +8,11 @@ using ForkliftHub.Models;
 namespace ForkliftHub.Controllers
 {
     [Authorize(Roles = "Admin")]
-    public class ModelsController : Controller
+    public class MachineModelsController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public ModelsController(ApplicationDbContext context)
+        public MachineModelsController(ApplicationDbContext context)
         {
             _context = context;
         }
@@ -20,7 +20,7 @@ namespace ForkliftHub.Controllers
         // GET: Models
         public async Task<IActionResult> Index()
         {
-            var models = await _context.Models
+            var models = await _context.MachineModels
                 .Include(m => m.Brand)
                 .ToListAsync();
             return View(models);
@@ -36,11 +36,11 @@ namespace ForkliftHub.Controllers
         // POST: Models/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Model model)
+        public async Task<IActionResult> Create(MachineModel model)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(model);
+                _context.MachineModels.Add(model);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
@@ -55,7 +55,7 @@ namespace ForkliftHub.Controllers
             if (id == null)
                 return NotFound();
 
-            var model = await _context.Models.FindAsync(id);
+            var model = await _context.MachineModels.FindAsync(id);
             if (model == null)
                 return NotFound();
 
@@ -66,7 +66,7 @@ namespace ForkliftHub.Controllers
         // POST: Models/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Model model)
+        public async Task<IActionResult> Edit(int id, MachineModel model)
         {
             if (id != model.Id)
                 return NotFound();
@@ -75,7 +75,7 @@ namespace ForkliftHub.Controllers
             {
                 try
                 {
-                    _context.Update(model);
+                    _context.MachineModels.Update(model);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -98,7 +98,7 @@ namespace ForkliftHub.Controllers
             if (id == null)
                 return NotFound();
 
-            var model = await _context.Models
+            var model = await _context.MachineModels
                 .Include(m => m.Brand)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (model == null)
@@ -112,10 +112,10 @@ namespace ForkliftHub.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var model = await _context.Models.FindAsync(id);
+            var model = await _context.MachineModels.FindAsync(id);
             if (model != null)
             {
-                _context.Models.Remove(model);
+                _context.MachineModels.Remove(model);
                 await _context.SaveChangesAsync();
             }
 
@@ -124,7 +124,7 @@ namespace ForkliftHub.Controllers
 
         private bool ModelExists(int id)
         {
-            return _context.Models.Any(e => e.Id == id);
+            return _context.MachineModels.Any(e => e.Id == id);
         }
     }
 }

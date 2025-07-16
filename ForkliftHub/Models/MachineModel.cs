@@ -1,10 +1,12 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ForkliftHub.Models
 {
+    [Table("MachineModels")]
     [Description("Model of machine")]
-    public class Model
+    public class MachineModel
     {
         [Key]
         public int Id { get; set; }

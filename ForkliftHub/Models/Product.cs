@@ -20,7 +20,7 @@ namespace ForkliftHub.Models
 
         [Required]
         public int ModelId { get; set; }
-        public Model Model { get; set; } = null!;
+        public MachineModel Model { get; set; } = null!;
 
         [Required]
         public int CategoryId { get; set; }
