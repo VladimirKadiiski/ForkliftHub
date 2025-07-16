@@ -1,0 +1,30 @@
+﻿@model IEnumerable<ForkliftHub.Models.ProductType>
+
+@{
+    ViewData["Title"] = "ProductTypes";
+}
+
+<h1>ProductTypes</h1>
+
+<a asp-action="Create" class="btn btn-primary mb-3">Add New ProductType</a>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th style="width: 150px;">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
