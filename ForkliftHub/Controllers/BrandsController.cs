@@ -67,8 +67,12 @@ public class BrandsController : Controller
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
         var brand = await _context.Brands.FindAsync(id);
-        _context.Brands.Remove(brand);
-        await _context.SaveChangesAsync();
+        if (brand != null)
+        {
+            _context.Brands.Remove(brand);
+            await _context.SaveChangesAsync();
+        }
         return RedirectToAction(nameof(Index));
     }
+
 }

@@ -60,8 +60,12 @@ public class CategoriesController : Controller
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
         var category = await _context.Categories.FindAsync(id);
-        _context.Categories.Remove(category);
-        await _context.SaveChangesAsync();
+        if (category != null)
+        {
+            _context.Categories.Remove(category);
+            await _context.SaveChangesAsync();
+        }
         return RedirectToAction(nameof(Index));
     }
+
 }

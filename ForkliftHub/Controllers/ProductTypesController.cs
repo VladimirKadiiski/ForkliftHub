@@ -60,8 +60,12 @@ public class ProductTypesController : Controller
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
         var productType = await _context.ProductTypes.FindAsync(id);
-        _context.ProductTypes.Remove(productType);
-        await _context.SaveChangesAsync();
+        if (productType != null)
+        {
+            _context.ProductTypes.Remove(productType);
+            await _context.SaveChangesAsync();
+        }
         return RedirectToAction(nameof(Index));
     }
+
 }
