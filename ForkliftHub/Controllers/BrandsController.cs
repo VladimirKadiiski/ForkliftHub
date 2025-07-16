@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using ForkliftHub.Data;
+﻿using ForkliftHub.Data;
 using ForkliftHub.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
+[Authorize(Roles = "Admin")]
 public class BrandsController : Controller
 {
     private readonly ApplicationDbContext _context;
