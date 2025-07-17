@@ -77,7 +77,7 @@ namespace ForkliftHub.Data
                     EngineId = 2,
                     MastTypeId = 2,
                     ProductTypeId = 1,
-                    ModelId = 1
+                    MachineModelId = 1
                 },
                 new Product
                 {
@@ -90,7 +90,7 @@ namespace ForkliftHub.Data
                     EngineId = 1,
                     MastTypeId = 1,
                     ProductTypeId = 2,
-                    ModelId = 2
+                    MachineModelId = 2
                 }
             );
 
@@ -102,9 +102,9 @@ namespace ForkliftHub.Data
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Product>()
-                .HasOne(p => p.Model)
+                .HasOne(p => p.MachineModel)
                 .WithMany(m => m.Products)
-                .HasForeignKey(p => p.ModelId)
+                .HasForeignKey(p => p.MachineModelId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Product>()

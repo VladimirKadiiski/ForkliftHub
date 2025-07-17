@@ -17,12 +17,16 @@ namespace ForkliftHub.Controllers
                 .Include(p => p.Brand)
                 .Include(p => p.Category)
                 .Include(p => p.ProductType)
+                .Include(p => p.MachineModel)
+                .Include(p => p.Engine)
+                .Include(p => p.MastType)
                 .ToListAsync();
 
             return View(products);
         }
 
-        // GET: Products/Details
+
+        // GET: Products/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
@@ -31,6 +35,9 @@ namespace ForkliftHub.Controllers
                 .Include(p => p.Brand)
                 .Include(p => p.Category)
                 .Include(p => p.ProductType)
+                .Include(p => p.MachineModel)
+                .Include(p => p.Engine)
+                .Include(p => p.MastType)
                 .FirstOrDefaultAsync(p => p.Id == id);
 
             if (product == null) return NotFound();
@@ -38,14 +45,20 @@ namespace ForkliftHub.Controllers
             return View(product);
         }
 
+
         // GET: /Products/Create
         public IActionResult Create()
         {
             ViewData["Brands"] = new SelectList(_context.Brands, "Id", "Name");
             ViewData["Categories"] = new SelectList(_context.Categories, "Id", "Name");
             ViewData["ProductTypes"] = new SelectList(_context.ProductTypes, "Id", "Name");
+            ViewData["Models"] = new SelectList(_context.MachineModels, "Id", "Name");
+            ViewData["Engines"] = new SelectList(_context.Engines, "Id", "Type");
+            ViewData["MastTypes"] = new SelectList(_context.MastTypes, "Id", "Name");
+
             return View();
         }
+
 
         // POST: /Products/Create
         [HttpPost]
@@ -54,14 +67,18 @@ namespace ForkliftHub.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(product);
+                _context.Products.Add(product);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["Brands"] = new SelectList(_context.Brands, "Id", "Name", product.BrandId);
-            ViewData["Categories"] = new SelectList(_context.Categories, "Id", "Name", product.CategoryId);
-            ViewData["ProductTypes"] = new SelectList(_context.ProductTypes, "Id", "Name", product.ProductTypeId);
+            ViewData["Brands"] = new SelectList(_context.Brands, "Id", "Name", product?.Brand);
+            ViewData["Categories"] = new SelectList(_context.Categories, "Id", "Name", product?.Category);
+            ViewData["ProductTypes"] = new SelectList(_context.ProductTypes, "Id", "Name", product?.ProductType);
+            ViewData["Models"] = new SelectList(_context.MachineModels, "Id", "Name", product?.MachineModel);
+            ViewData["Engines"] = new SelectList(_context.Engines, "Id", "Type", product?.Engine);
+            ViewData["MastTypes"] = new SelectList(_context.MastTypes, "Id", "Name", product?.MastType);
+
             return View(product);
         }
 
@@ -73,9 +90,13 @@ namespace ForkliftHub.Controllers
             var product = await _context.Products.FindAsync(id);
             if (product == null) return NotFound();
 
-            ViewData["Brands"] = new SelectList(_context.Brands, "Id", "Name", product.BrandId);
-            ViewData["Categories"] = new SelectList(_context.Categories, "Id", "Name", product.CategoryId);
-            ViewData["ProductTypes"] = new SelectList(_context.ProductTypes, "Id", "Name", product.ProductTypeId);
+            ViewData["Brands"] = new SelectList(_context.Brands, "Id", "Name", product.Brand);
+            ViewData["Categories"] = new SelectList(_context.Categories, "Id", "Name", product.Category);
+            ViewData["ProductTypes"] = new SelectList(_context.ProductTypes, "Id", "Name", product.ProductType);
+            ViewData["Models"] = new SelectList(_context.MachineModels, "Id", "Name", product.MachineModel);
+            ViewData["Engines"] = new SelectList(_context.Engines, "Id", "Type", product.Engine);
+            ViewData["MastTypes"] = new SelectList(_context.MastTypes, "Id", "Name", product.MastType);
+
 
             return View(product);
         }
@@ -91,7 +112,7 @@ namespace ForkliftHub.Controllers
             {
                 try
                 {
-                    _context.Update(product);
+                    _context.Products.Update(product);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -104,13 +125,17 @@ namespace ForkliftHub.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["Brands"] = new SelectList(_context.Brands, "Id", "Name", product.BrandId);
-            ViewData["Categories"] = new SelectList(_context.Categories, "Id", "Name", product.CategoryId);
-            ViewData["ProductTypes"] = new SelectList(_context.ProductTypes, "Id", "Name", product.ProductTypeId);
+            ViewData["Brands"] = new SelectList(_context.Brands, "Id", "Name", product.Brand);
+            ViewData["Categories"] = new SelectList(_context.Categories, "Id", "Name", product.Category);
+            ViewData["ProductTypes"] = new SelectList(_context.ProductTypes, "Id", "Name", product.ProductType);
+            ViewData["Models"] = new SelectList(_context.MachineModels, "Id", "Name", product.MachineModel);
+            ViewData["Engines"] = new SelectList(_context.Engines, "Id", "Type", product.Engine);
+            ViewData["MastTypes"] = new SelectList(_context.MastTypes, "Id", "Name", product.MastType);
+
             return View(product);
         }
 
-        // GET: Products/Delete
+        // GET: Products/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
@@ -119,12 +144,16 @@ namespace ForkliftHub.Controllers
                 .Include(p => p.Brand)
                 .Include(p => p.Category)
                 .Include(p => p.ProductType)
+                .Include(p => p.MachineModel)
+                .Include(p => p.Engine)
+                .Include(p => p.MastType)
                 .FirstOrDefaultAsync(p => p.Id == id);
 
             if (product == null) return NotFound();
 
             return View(product);
         }
+
 
         // POST: Products/Delete
         [HttpPost, ActionName("Delete")]
