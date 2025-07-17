@@ -3,12 +3,25 @@ using ForkliftHub.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using ForkliftHub.ViewModels;
+
 
 namespace ForkliftHub.Controllers
 {
     public class ProductsController(ApplicationDbContext context) : Controller
     {
         private readonly ApplicationDbContext _context = context;
+
+        private ProductFormViewModel PopulateDropdowns(ProductFormViewModel vm)
+        {
+            vm.Brands = new SelectList(_context.Brands, "Id", "Name", vm.BrandId);
+            vm.MachineModels = new SelectList(_context.MachineModels, "Id", "Name", vm.MachineModelId);
+            vm.Categories = new SelectList(_context.Categories, "Id", "Name", vm.CategoryId);
+            vm.Engines = new SelectList(_context.Engines, "Id", "Type", vm.EngineId);
+            vm.MastTypes = new SelectList(_context.MastTypes, "Id", "Name", vm.MastTypeId);
+            vm.ProductTypes = new SelectList(_context.ProductTypes, "Id", "Name", vm.ProductTypeId);
+            return vm;
+        }
 
         // GET: /Products
         public async Task<IActionResult> Index()
@@ -46,43 +59,46 @@ namespace ForkliftHub.Controllers
         }
 
 
-        // GET: /Products/Create
         public IActionResult Create()
         {
-            ViewData["Brands"] = new SelectList(_context.Brands, "Id", "Name");
-            ViewData["Categories"] = new SelectList(_context.Categories, "Id", "Name");
-            ViewData["ProductTypes"] = new SelectList(_context.ProductTypes, "Id", "Name");
-            ViewData["Models"] = new SelectList(_context.MachineModels, "Id", "Name");
-            ViewData["Engines"] = new SelectList(_context.Engines, "Id", "Type");
-            ViewData["MastTypes"] = new SelectList(_context.MastTypes, "Id", "Name");
-
-            return View();
+            var vm = PopulateDropdowns(new ProductFormViewModel());
+            return View(vm);
         }
 
 
-        // POST: /Products/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Product product)
+        public async Task<IActionResult> Create(ProductFormViewModel vm)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                _context.Products.Add(product);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                PopulateDropdowns(vm);
+                return View(vm);
             }
 
-            ViewData["Brands"] = new SelectList(_context.Brands, "Id", "Name", product?.Brand);
-            ViewData["Categories"] = new SelectList(_context.Categories, "Id", "Name", product?.Category);
-            ViewData["ProductTypes"] = new SelectList(_context.ProductTypes, "Id", "Name", product?.ProductType);
-            ViewData["Models"] = new SelectList(_context.MachineModels, "Id", "Name", product?.MachineModel);
-            ViewData["Engines"] = new SelectList(_context.Engines, "Id", "Type", product?.Engine);
-            ViewData["MastTypes"] = new SelectList(_context.MastTypes, "Id", "Name", product?.MastType);
+            var product = new Product
+            {
+                Name = vm.Name,
+                BrandId = vm.BrandId,
+                MachineModelId = vm.MachineModelId,
+                CategoryId = vm.CategoryId,
+                EngineId = vm.EngineId,
+                MastTypeId = vm.MastTypeId,
+                LiftingHeight = vm.LiftingHeight,
+                ClosedHeight = vm.ClosedHeight,
+                Description = vm.Description,
+                ImageUrl = vm.ImageUrl,
+                Price = vm.Price,
+                Stock = vm.Stock,
+                ProductTypeId = vm.ProductTypeId
+            };
 
-            return View(product);
+            _context.Products.Add(product);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
-        // GET: Products/Edit
+
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
@@ -90,50 +106,62 @@ namespace ForkliftHub.Controllers
             var product = await _context.Products.FindAsync(id);
             if (product == null) return NotFound();
 
-            ViewData["Brands"] = new SelectList(_context.Brands, "Id", "Name", product.Brand);
-            ViewData["Categories"] = new SelectList(_context.Categories, "Id", "Name", product.Category);
-            ViewData["ProductTypes"] = new SelectList(_context.ProductTypes, "Id", "Name", product.ProductType);
-            ViewData["Models"] = new SelectList(_context.MachineModels, "Id", "Name", product.MachineModel);
-            ViewData["Engines"] = new SelectList(_context.Engines, "Id", "Type", product.Engine);
-            ViewData["MastTypes"] = new SelectList(_context.MastTypes, "Id", "Name", product.MastType);
+            var vm = new ProductFormViewModel
+            {
+                Id = product.Id,
+                Name = product.Name,
+                BrandId = product.BrandId,
+                MachineModelId = product.MachineModelId,
+                CategoryId = product.CategoryId,
+                EngineId = product.EngineId,
+                MastTypeId = product.MastTypeId,
+                LiftingHeight = product.LiftingHeight,
+                ClosedHeight = product.ClosedHeight,
+                Description = product.Description,
+                ImageUrl = product.ImageUrl,
+                Price = product.Price,
+                Stock = product.Stock,
+                ProductTypeId = product.ProductTypeId
+            };
 
-
-            return View(product);
+            PopulateDropdowns(vm);
+            return View(vm);
         }
 
-        // POST: Products/Edit
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Product product)
+        public async Task<IActionResult> Edit(int id, ProductFormViewModel vm)
         {
-            if (id != product.Id) return NotFound();
+            if (id != vm.Id) return NotFound();
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                try
-                {
-                    _context.Products.Update(product);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!_context.Products.Any(p => p.Id == product.Id))
-                        return NotFound();
-                    else
-                        throw;
-                }
-                return RedirectToAction(nameof(Index));
+                PopulateDropdowns(vm);
+                return View(vm);
             }
 
-            ViewData["Brands"] = new SelectList(_context.Brands, "Id", "Name", product.Brand);
-            ViewData["Categories"] = new SelectList(_context.Categories, "Id", "Name", product.Category);
-            ViewData["ProductTypes"] = new SelectList(_context.ProductTypes, "Id", "Name", product.ProductType);
-            ViewData["Models"] = new SelectList(_context.MachineModels, "Id", "Name", product.MachineModel);
-            ViewData["Engines"] = new SelectList(_context.Engines, "Id", "Type", product.Engine);
-            ViewData["MastTypes"] = new SelectList(_context.MastTypes, "Id", "Name", product.MastType);
+            var product = await _context.Products.FindAsync(id);
+            if (product == null) return NotFound();
 
-            return View(product);
+            product.Name = vm.Name;
+            product.BrandId = vm.BrandId;
+            product.MachineModelId = vm.MachineModelId;
+            product.CategoryId = vm.CategoryId;
+            product.EngineId = vm.EngineId;
+            product.MastTypeId = vm.MastTypeId;
+            product.LiftingHeight = vm.LiftingHeight;
+            product.ClosedHeight = vm.ClosedHeight;
+            product.Description = vm.Description;
+            product.ImageUrl = vm.ImageUrl;
+            product.Price = vm.Price;
+            product.Stock = vm.Stock;
+            product.ProductTypeId = vm.ProductTypeId;
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
+
 
         // GET: Products/Delete/5
         public async Task<IActionResult> Delete(int? id)
