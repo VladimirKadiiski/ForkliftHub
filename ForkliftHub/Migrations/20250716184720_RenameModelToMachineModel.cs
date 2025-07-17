@@ -2,13 +2,15 @@
 
 #nullable disable
 
-#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
 namespace ForkliftHub.Migrations
 {
     /// <inheritdoc />
     public partial class RenameModelToMachineModel : Migration
     {
+        private static readonly string[] columns = new[] { "Id", "BrandId", "Name" };
+        private static readonly string[] columnsArray = new[] { "Id", "BrandId", "Name" };
+
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -41,7 +43,7 @@ namespace ForkliftHub.Migrations
 
             migrationBuilder.InsertData(
                 table: "MachineModels",
-                columns: new[] { "Id", "BrandId", "Name" },
+                columns: columns,
                 values: new object[,]
                 {
                     { 1, 1, "8FBEKT20" },
@@ -96,7 +98,7 @@ namespace ForkliftHub.Migrations
 
             migrationBuilder.InsertData(
                 table: "Models",
-                columns: new[] { "Id", "BrandId", "Name" },
+                columns: columnsArray,
                 values: new object[,]
                 {
                     { 1, 1, "8FBEKT20" },

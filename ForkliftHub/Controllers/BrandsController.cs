@@ -4,75 +4,73 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-[Authorize(Roles = "Admin")]
-public class BrandsController : Controller
+namespace ForkliftHub.Controllers
 {
-    private readonly ApplicationDbContext _context;
-
-    public BrandsController(ApplicationDbContext context)
+    [Authorize(Roles = "Admin")]
+    public class BrandsController(ApplicationDbContext context) : Controller
     {
-        _context = context;
-    }
+        private readonly ApplicationDbContext _context = context;
 
-    public async Task<IActionResult> Index()
-    {
-        return View(await _context.Brands.ToListAsync());
-    }
-
-    public IActionResult Create() => View();
-
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(Brand brand)
-    {
-        if (ModelState.IsValid)
+        public async Task<IActionResult> Index()
         {
-            _context.Add(brand);
-            await _context.SaveChangesAsync();
+            return View(await _context.Brands.ToListAsync());
+        }
+
+        public IActionResult Create() => View();
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(Brand brand)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(brand);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(brand);
+        }
+
+        public async Task<IActionResult> Edit(int id)
+        {
+            var brand = await _context.Brands.FindAsync(id);
+            if (brand == null) return NotFound();
+            return View(brand);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, Brand brand)
+        {
+            if (id != brand.Id) return NotFound();
+            if (ModelState.IsValid)
+            {
+                _context.Update(brand);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(brand);
+        }
+
+        public async Task<IActionResult> Delete(int id)
+        {
+            var brand = await _context.Brands.FindAsync(id);
+            if (brand == null) return NotFound();
+            return View(brand);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var brand = await _context.Brands.FindAsync(id);
+            if (brand != null)
+            {
+                _context.Brands.Remove(brand);
+                await _context.SaveChangesAsync();
+            }
             return RedirectToAction(nameof(Index));
         }
-        return View(brand);
-    }
 
-    public async Task<IActionResult> Edit(int id)
-    {
-        var brand = await _context.Brands.FindAsync(id);
-        if (brand == null) return NotFound();
-        return View(brand);
     }
-
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, Brand brand)
-    {
-        if (id != brand.Id) return NotFound();
-        if (ModelState.IsValid)
-        {
-            _context.Update(brand);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-        return View(brand);
-    }
-
-    public async Task<IActionResult> Delete(int id)
-    {
-        var brand = await _context.Brands.FindAsync(id);
-        if (brand == null) return NotFound();
-        return View(brand);
-    }
-
-    [HttpPost, ActionName("Delete")]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> DeleteConfirmed(int id)
-    {
-        var brand = await _context.Brands.FindAsync(id);
-        if (brand != null)
-        {
-            _context.Brands.Remove(brand);
-            await _context.SaveChangesAsync();
-        }
-        return RedirectToAction(nameof(Index));
-    }
-
 }

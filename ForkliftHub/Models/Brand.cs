@@ -13,6 +13,6 @@ namespace ForkliftHub.Models
         [StringLength(100)]
         public string Name { get; set; } = null!;
 
-        public ICollection<MachineModel>MachineModels{ get; set; } = new List<MachineModel>();
+        public ICollection<MachineModel> MachineModels { get; set; } = new List<MachineModel>();
     }
 }

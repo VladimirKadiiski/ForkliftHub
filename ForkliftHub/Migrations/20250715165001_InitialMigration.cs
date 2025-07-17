@@ -3,13 +3,20 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
 namespace ForkliftHub.Migrations
 {
     /// <inheritdoc />
     public partial class InitialMigration : Migration
     {
+        private static readonly string[] columns = new[] { "Id", "Name" };
+        private static readonly string[] columnsArray = new[] { "Id", "Name" };
+        private static readonly string[] columnsArray0 = new[] { "Id", "Type" };
+        private static readonly string[] columnsArray1 = new[] { "Id", "Name" };
+        private static readonly string[] columnsArray2 = new[] { "Id", "Name" };
+        private static readonly string[] columnsArray3 = new[] { "Id", "BrandId", "Name" };
+        private static readonly string[] columnsArray4 = new[] { "Id", "BrandId", "CategoryId", "ClosedHeight", "Description", "EngineId", "ImageUrl", "LiftingHeight", "MastTypeId", "ModelId", "Name", "Price", "ProductTypeId", "Stock" };
+
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -336,7 +343,7 @@ namespace ForkliftHub.Migrations
 
             migrationBuilder.InsertData(
                 table: "Brands",
-                columns: new[] { "Id", "Name" },
+                columns: columns,
                 values: new object[,]
                 {
                     { 1, "Toyota" },
@@ -347,7 +354,7 @@ namespace ForkliftHub.Migrations
 
             migrationBuilder.InsertData(
                 table: "Categories",
-                columns: new[] { "Id", "Name" },
+                columns: columnsArray,
                 values: new object[,]
                 {
                     { 1, "Electric Pallet Truck" },
@@ -358,7 +365,7 @@ namespace ForkliftHub.Migrations
 
             migrationBuilder.InsertData(
                 table: "Engines",
-                columns: new[] { "Id", "Type" },
+                columns: columnsArray0,
                 values: new object[,]
                 {
                     { 1, "Diesel" },
@@ -368,7 +375,7 @@ namespace ForkliftHub.Migrations
 
             migrationBuilder.InsertData(
                 table: "MastTypes",
-                columns: new[] { "Id", "Name" },
+                columns: columnsArray1,
                 values: new object[,]
                 {
                     { 1, "Simplex" },
@@ -378,7 +385,7 @@ namespace ForkliftHub.Migrations
 
             migrationBuilder.InsertData(
                 table: "ProductTypes",
-                columns: new[] { "Id", "Name" },
+                columns: columnsArray2,
                 values: new object[,]
                 {
                     { 1, "New" },
@@ -387,7 +394,7 @@ namespace ForkliftHub.Migrations
 
             migrationBuilder.InsertData(
                 table: "Models",
-                columns: new[] { "Id", "BrandId", "Name" },
+                columns: columnsArray3,
                 values: new object[,]
                 {
                     { 1, 1, "8FBEKT20" },
@@ -398,7 +405,7 @@ namespace ForkliftHub.Migrations
 
             migrationBuilder.InsertData(
                 table: "Products",
-                columns: new[] { "Id", "BrandId", "CategoryId", "ClosedHeight", "Description", "EngineId", "ImageUrl", "LiftingHeight", "MastTypeId", "ModelId", "Name", "Price", "ProductTypeId", "Stock" },
+                columns: columnsArray4,
                 values: new object[,]
                 {
                     { 1, 1, 4, 0m, "High efficiency 3-wheel electric forklift.", 2, null, 0m, 2, 1, "Toyota Electric Forklift", 32000m, 1, 0 },

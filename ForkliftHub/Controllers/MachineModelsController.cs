@@ -8,14 +8,9 @@ using ForkliftHub.Models;
 namespace ForkliftHub.Controllers
 {
     [Authorize(Roles = "Admin")]
-    public class MachineModelsController : Controller
+    public class MachineModelsController(ApplicationDbContext context) : Controller
     {
-        private readonly ApplicationDbContext _context;
-
-        public MachineModelsController(ApplicationDbContext context)
-        {
-            _context = context;
-        }
+        private readonly ApplicationDbContext _context = context;
 
         // GET: Models
         public async Task<IActionResult> Index()
