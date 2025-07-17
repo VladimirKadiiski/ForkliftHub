@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authorization;
-using ForkliftHub.Data;
+﻿using ForkliftHub.Data;
 using ForkliftHub.Models;
+using ForkliftHub.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ForkliftHub.Controllers
 {
@@ -11,63 +12,71 @@ namespace ForkliftHub.Controllers
     {
         private readonly ApplicationDbContext _context = context;
 
-        public async Task<IActionResult> Index() => View(await _context.ProductTypes.ToListAsync());
+        public async Task<IActionResult> Index()
+        {
+            var productTypes = await _context.ProductTypes.ToListAsync();
+            return View(productTypes);
+        }
 
-        public IActionResult Create() => View();
+        public IActionResult Create() => View(new ProductTypeViewModel());
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(ProductType productType)
+        public async Task<IActionResult> Create(ProductTypeViewModel vm)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(productType);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(productType);
+            if (!ModelState.IsValid)
+                return View(vm);
+
+            _context.ProductTypes.Add(new ProductType { Name = vm.Name });
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> Edit(int id)
+        public async Task<IActionResult> Edit(int? id)
         {
-            var productType = await _context.ProductTypes.FindAsync(id);
-            if (productType == null) return NotFound();
-            return View(productType);
+            if (id == null) return NotFound();
+            var type = await _context.ProductTypes.FindAsync(id);
+            if (type == null) return NotFound();
+
+            return View(new ProductTypeViewModel { Id = type.Id, Name = type.Name });
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, ProductType productType)
+        public async Task<IActionResult> Edit(int id, ProductTypeViewModel vm)
         {
-            if (id != productType.Id) return NotFound();
-            if (ModelState.IsValid)
-            {
-                _context.Update(productType);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(productType);
+            if (id != vm.Id) return NotFound();
+            if (!ModelState.IsValid) return View(vm);
+
+            var type = await _context.ProductTypes.FindAsync(id);
+            if (type == null) return NotFound();
+
+            type.Name = vm.Name;
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(int? id)
         {
-            var productType = await _context.ProductTypes.FindAsync(id);
-            if (productType == null) return NotFound();
-            return View(productType);
+            if (id == null) return NotFound();
+            var type = await _context.ProductTypes.FindAsync(id);
+            if (type == null) return NotFound();
+
+            return View(new ProductTypeDeleteViewModel { Id = type.Id, Name = type.Name });
         }
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var productType = await _context.ProductTypes.FindAsync(id);
-            if (productType != null)
+            var type = await _context.ProductTypes.FindAsync(id);
+            if (type != null)
             {
-                _context.ProductTypes.Remove(productType);
+                _context.ProductTypes.Remove(type);
                 await _context.SaveChangesAsync();
             }
+
             return RedirectToAction(nameof(Index));
         }
-
     }
 }

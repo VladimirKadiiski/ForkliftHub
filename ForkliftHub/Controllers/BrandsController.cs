@@ -1,5 +1,6 @@
 ﻿using ForkliftHub.Data;
 using ForkliftHub.Models;
+using ForkliftHub.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,50 +14,55 @@ namespace ForkliftHub.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Brands.ToListAsync());
+            var brands = await _context.Brands.ToListAsync();
+            return View(brands);
         }
 
-        public IActionResult Create() => View();
+        public IActionResult Create() => View(new BrandViewModel());
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Brand brand)
+        public async Task<IActionResult> Create(BrandViewModel vm)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(brand);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(brand);
+            if (!ModelState.IsValid)
+                return View(vm);
+
+            _context.Brands.Add(new Brand { Name = vm.Name });
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> Edit(int id)
+        public async Task<IActionResult> Edit(int? id)
         {
+            if (id == null) return NotFound();
             var brand = await _context.Brands.FindAsync(id);
             if (brand == null) return NotFound();
-            return View(brand);
+
+            return View(new BrandViewModel { Id = brand.Id, Name = brand.Name });
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Brand brand)
+        public async Task<IActionResult> Edit(int id, BrandViewModel vm)
         {
-            if (id != brand.Id) return NotFound();
-            if (ModelState.IsValid)
-            {
-                _context.Update(brand);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(brand);
-        }
+            if (id != vm.Id) return NotFound();
+            if (!ModelState.IsValid) return View(vm);
 
-        public async Task<IActionResult> Delete(int id)
-        {
             var brand = await _context.Brands.FindAsync(id);
             if (brand == null) return NotFound();
-            return View(brand);
+
+            brand.Name = vm.Name;
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null) return NotFound();
+            var brand = await _context.Brands.FindAsync(id);
+            if (brand == null) return NotFound();
+
+            return View(new BrandDeleteViewModel { Id = brand.Id, Name = brand.Name });
         }
 
         [HttpPost, ActionName("Delete")]
@@ -69,8 +75,8 @@ namespace ForkliftHub.Controllers
                 _context.Brands.Remove(brand);
                 await _context.SaveChangesAsync();
             }
+
             return RedirectToAction(nameof(Index));
         }
-
     }
 }

@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authorization;
-using ForkliftHub.Data;
+﻿using ForkliftHub.Data;
 using ForkliftHub.Models;
+using ForkliftHub.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ForkliftHub.Controllers
 {
@@ -11,49 +12,57 @@ namespace ForkliftHub.Controllers
     {
         private readonly ApplicationDbContext _context = context;
 
-        public async Task<IActionResult> Index() => View(await _context.Categories.ToListAsync());
+        public async Task<IActionResult> Index()
+        {
+            var categories = await _context.Categories.ToListAsync();
+            return View(categories);
+        }
 
-        public IActionResult Create() => View();
+        public IActionResult Create() => View(new CategoryViewModel());
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Category category)
+        public async Task<IActionResult> Create(CategoryViewModel vm)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(category);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(category);
+            if (!ModelState.IsValid)
+                return View(vm);
+
+            _context.Categories.Add(new Category { Name = vm.Name });
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> Edit(int id)
+        public async Task<IActionResult> Edit(int? id)
         {
+            if (id == null) return NotFound();
             var category = await _context.Categories.FindAsync(id);
             if (category == null) return NotFound();
-            return View(category);
+
+            return View(new CategoryViewModel { Id = category.Id, Name = category.Name });
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Category category)
+        public async Task<IActionResult> Edit(int id, CategoryViewModel vm)
         {
-            if (id != category.Id) return NotFound();
-            if (ModelState.IsValid)
-            {
-                _context.Update(category);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(category);
-        }
+            if (id != vm.Id) return NotFound();
+            if (!ModelState.IsValid) return View(vm);
 
-        public async Task<IActionResult> Delete(int id)
-        {
             var category = await _context.Categories.FindAsync(id);
             if (category == null) return NotFound();
-            return View(category);
+
+            category.Name = vm.Name;
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null) return NotFound();
+            var category = await _context.Categories.FindAsync(id);
+            if (category == null) return NotFound();
+
+            return View(new CategoryDeleteViewModel { Id = category.Id, Name = category.Name });
         }
 
         [HttpPost, ActionName("Delete")]
@@ -66,8 +75,8 @@ namespace ForkliftHub.Controllers
                 _context.Categories.Remove(category);
                 await _context.SaveChangesAsync();
             }
+
             return RedirectToAction(nameof(Index));
         }
-
     }
 }
