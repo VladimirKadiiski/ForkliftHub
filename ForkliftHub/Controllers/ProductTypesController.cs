@@ -62,7 +62,7 @@ namespace ForkliftHub.Controllers
             var type = await _context.ProductTypes.FindAsync(id);
             if (type == null) return NotFound();
 
-            return View(new ProductTypeDeleteViewModel { Id = type.Id, Name = type.Name });
+            return View(new ProductTypeViewModel { Id = type.Id, Name = type.Name });
         }
 
         [HttpPost, ActionName("Delete")]

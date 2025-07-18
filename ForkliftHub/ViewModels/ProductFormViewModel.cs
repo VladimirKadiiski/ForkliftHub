@@ -5,7 +5,7 @@ namespace ForkliftHub.ViewModels
 {
     public class ProductFormViewModel
     {
-        public int? Id { get; set; } // null for Create, set for Edit
+        public int? Id { get; set; } 
 
         [Required, StringLength(120)]
         public string Name { get; set; } = null!;

@@ -1,0 +1,19 @@
+﻿@model ForkliftHub.ViewModels.EngineViewModel
+
+@{
+    ViewData["Title"] = "Edit Engine";
+}
+
+<h2>Edit Engine</h2>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Id" />
+    <div class="form-group">
+        <label asp-for="Name"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <br />
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-action="Index" class="btn btn-secondary">Back</a>
+</form>

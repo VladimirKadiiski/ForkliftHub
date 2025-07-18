@@ -8,26 +8,25 @@ using Microsoft.EntityFrameworkCore;
 namespace ForkliftHub.Controllers
 {
     [Authorize(Roles = "Admin")]
-    public class CategoriesController(ApplicationDbContext context) : Controller
+    public class MastTypesController(ApplicationDbContext context) : Controller
     {
         private readonly ApplicationDbContext _context = context;
 
         public async Task<IActionResult> Index()
         {
-            var categories = await _context.Categories.ToListAsync();
-            return View(categories);
+            var types = await _context.MastTypes.ToListAsync();
+            return View(types);
         }
 
-        public IActionResult Create() => View(new CategoryViewModel());
+        public IActionResult Create() => View(new MastTypeViewModel());
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CategoryViewModel vm)
+        public async Task<IActionResult> Create(MastTypeViewModel vm)
         {
-            if (!ModelState.IsValid)
-                return View(vm);
+            if (!ModelState.IsValid) return View(vm);
 
-            _context.Categories.Add(new Category { Name = vm.Name });
+            _context.MastTypes.Add(new MastType { Name = vm.Name });
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
@@ -35,23 +34,24 @@ namespace ForkliftHub.Controllers
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
-            var category = await _context.Categories.FindAsync(id);
-            if (category == null) return NotFound();
 
-            return View(new CategoryViewModel { Id = category.Id, Name = category.Name });
+            var mastType = await _context.MastTypes.FindAsync(id);
+            if (mastType == null) return NotFound();
+
+            return View(new MastTypeViewModel { Id = mastType.Id, Name = mastType.Name });
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, CategoryViewModel vm)
+        public async Task<IActionResult> Edit(int id, MastTypeViewModel vm)
         {
             if (id != vm.Id) return NotFound();
             if (!ModelState.IsValid) return View(vm);
 
-            var category = await _context.Categories.FindAsync(id);
-            if (category == null) return NotFound();
+            var mastType = await _context.MastTypes.FindAsync(id);
+            if (mastType == null) return NotFound();
 
-            category.Name = vm.Name;
+            mastType.Name = vm.Name;
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
@@ -59,20 +59,21 @@ namespace ForkliftHub.Controllers
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
-            var category = await _context.Categories.FindAsync(id);
-            if (category == null) return NotFound();
 
-            return View(new CategoryViewModel { Id = category.Id, Name = category.Name });
+            var mastType = await _context.MastTypes.FindAsync(id);
+            if (mastType == null) return NotFound();
+
+            return View(new MastTypeViewModel { Id = mastType.Id, Name = mastType.Name });
         }
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var category = await _context.Categories.FindAsync(id);
-            if (category != null)
+            var mastType = await _context.MastTypes.FindAsync(id);
+            if (mastType != null)
             {
-                _context.Categories.Remove(category);
+                _context.MastTypes.Remove(mastType);
                 await _context.SaveChangesAsync();
             }
 
