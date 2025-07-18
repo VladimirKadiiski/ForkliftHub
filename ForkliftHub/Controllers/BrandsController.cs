@@ -27,6 +27,12 @@ namespace ForkliftHub.Controllers
             if (!ModelState.IsValid)
                 return View(vm);
 
+            if (_context.Brands.Any(b => b.Name == vm.Name))
+            {
+                ModelState.AddModelError("Name", "A brand with this name already exists.");
+                return View(vm);
+            }
+
             _context.Brands.Add(new Brand { Name = vm.Name });
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

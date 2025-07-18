@@ -54,6 +54,12 @@ namespace ForkliftHub.Controllers
                 BrandId = vm.BrandId
             };
 
+            if (_context.MachineModels.Any(mm => mm.Name == vm.Name))
+            {
+                ModelState.AddModelError("Name", "A model with this name already exists.");
+                return View(vm);
+            }
+
             _context.MachineModels.Add(model);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

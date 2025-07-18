@@ -27,6 +27,12 @@ namespace ForkliftHub.Controllers
             if (!ModelState.IsValid)
                 return View(vm);
 
+            if (_context.ProductTypes.Any(pt => pt.Name == vm.Name))
+            {
+                ModelState.AddModelError("Name", "A type of product with this name already exists.");
+                return View(vm);
+            }
+
             _context.ProductTypes.Add(new ProductType { Name = vm.Name });
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

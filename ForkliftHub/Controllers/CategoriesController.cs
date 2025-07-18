@@ -27,6 +27,12 @@ namespace ForkliftHub.Controllers
             if (!ModelState.IsValid)
                 return View(vm);
 
+            if (_context.Categories.Any(c => c.Name == vm.Name))
+            {
+                ModelState.AddModelError("Name", "A category with this name already exists.");
+                return View(vm);
+            }
+
             _context.Categories.Add(new Category { Name = vm.Name });
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

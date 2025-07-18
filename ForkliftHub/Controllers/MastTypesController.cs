@@ -26,6 +26,12 @@ namespace ForkliftHub.Controllers
         {
             if (!ModelState.IsValid) return View(vm);
 
+            if (_context.MastTypes.Any(mt => mt.Name == vm.Name))
+            {
+                ModelState.AddModelError("Name", "A type of mast with this name already exists.");
+                return View(vm);
+            }
+
             _context.MastTypes.Add(new MastType { Name = vm.Name });
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

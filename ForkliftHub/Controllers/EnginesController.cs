@@ -26,6 +26,12 @@ namespace ForkliftHub.Controllers
         {
             if (!ModelState.IsValid) return View(vm);
 
+            if (_context.Engines.Any(e => e.Type == vm.Name))
+            {
+                ModelState.AddModelError("Name", "An engine with this name already exists.");
+                return View(vm);
+            }
+
             _context.Engines.Add(new Engine { Type = vm.Name });
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
