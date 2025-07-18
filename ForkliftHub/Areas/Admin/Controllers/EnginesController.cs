@@ -5,35 +5,35 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace ForkliftHub.Controllers
+namespace ForkliftHub.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     [Authorize(Roles = "Admin")]
-    public class BrandsController(ApplicationDbContext context) : Controller
+    public class EnginesController(ApplicationDbContext context) : Controller
     {
         private readonly ApplicationDbContext _context = context;
 
         public async Task<IActionResult> Index()
         {
-            var brands = await _context.Brands.ToListAsync();
-            return View(brands);
+            var engines = await _context.Engines.ToListAsync();
+            return View(engines);
         }
 
-        public IActionResult Create() => View(new BrandViewModel());
+        public IActionResult Create() => View(new EngineViewModel());
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(BrandViewModel vm)
+        public async Task<IActionResult> Create(EngineViewModel vm)
         {
-            if (!ModelState.IsValid)
-                return View(vm);
+            if (!ModelState.IsValid) return View(vm);
 
-            if (_context.Brands.Any(b => b.Name == vm.Name))
+            if (_context.Engines.Any(e => e.Type == vm.Name))
             {
-                ModelState.AddModelError("Name", "A brand with this name already exists.");
+                ModelState.AddModelError("Name", "An engine with this name already exists.");
                 return View(vm);
             }
 
-            _context.Brands.Add(new Brand { Name = vm.Name });
+            _context.Engines.Add(new Engine { Type = vm.Name });
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
@@ -41,23 +41,24 @@ namespace ForkliftHub.Controllers
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
-            var brand = await _context.Brands.FindAsync(id);
-            if (brand == null) return NotFound();
 
-            return View(new BrandViewModel { Id = brand.Id, Name = brand.Name });
+            var engine = await _context.Engines.FindAsync(id);
+            if (engine == null) return NotFound();
+
+            return View(new EngineViewModel { Id = engine.Id, Name = engine.Type });
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, BrandViewModel vm)
+        public async Task<IActionResult> Edit(int id, EngineViewModel vm)
         {
             if (id != vm.Id) return NotFound();
             if (!ModelState.IsValid) return View(vm);
 
-            var brand = await _context.Brands.FindAsync(id);
-            if (brand == null) return NotFound();
+            var engine = await _context.Engines.FindAsync(id);
+            if (engine == null) return NotFound();
 
-            brand.Name = vm.Name;
+            engine.Type = vm.Name;
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
@@ -65,20 +66,21 @@ namespace ForkliftHub.Controllers
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
-            var brand = await _context.Brands.FindAsync(id);
-            if (brand == null) return NotFound();
 
-            return View(new BrandDeleteViewModel { Id = brand.Id, Name = brand.Name });
+            var engine = await _context.Engines.FindAsync(id);
+            if (engine == null) return NotFound();
+
+            return View(new EngineViewModel { Id = engine.Id, Name = engine.Type });
         }
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var brand = await _context.Brands.FindAsync(id);
-            if (brand != null)
+            var engine = await _context.Engines.FindAsync(id);
+            if (engine != null)
             {
-                _context.Brands.Remove(brand);
+                _context.Engines.Remove(engine);
                 await _context.SaveChangesAsync();
             }
 

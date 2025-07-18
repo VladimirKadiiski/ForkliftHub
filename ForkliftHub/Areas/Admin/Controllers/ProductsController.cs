@@ -6,8 +6,9 @@ using Microsoft.EntityFrameworkCore;
 using ForkliftHub.ViewModels;
 
 
-namespace ForkliftHub.Controllers
+namespace ForkliftHub.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class ProductsController(ApplicationDbContext context) : Controller
     {
         private readonly ApplicationDbContext _context = context;

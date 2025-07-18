@@ -6,8 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
-namespace ForkliftHub.Controllers
+namespace ForkliftHub.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     [Authorize(Roles = "Admin")]
     public class MachineModelsController(ApplicationDbContext context) : Controller
     {

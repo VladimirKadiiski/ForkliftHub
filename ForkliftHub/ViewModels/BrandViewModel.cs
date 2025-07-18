@@ -14,12 +14,5 @@ namespace ForkliftHub.ViewModels
 }
 
 
-namespace ForkliftHub.ViewModels
-{
-    public class BrandDeleteViewModel
-    {
-        public int Id { get; set; }
-        public string Name { get; set; } = string.Empty;
-    }
-}
+
 

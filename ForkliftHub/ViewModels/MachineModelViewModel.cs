@@ -10,7 +10,7 @@ namespace ForkliftHub.ViewModels
 
         [Required]
         [Display(Name = "Model Name")]
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
         [Required]
         [Display(Name = "Brand")]

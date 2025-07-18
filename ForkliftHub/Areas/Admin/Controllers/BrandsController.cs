@@ -5,35 +5,36 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace ForkliftHub.Controllers
+namespace ForkliftHub.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     [Authorize(Roles = "Admin")]
-    public class CategoriesController(ApplicationDbContext context) : Controller
+    public class BrandsController(ApplicationDbContext context) : Controller
     {
         private readonly ApplicationDbContext _context = context;
 
         public async Task<IActionResult> Index()
         {
-            var categories = await _context.Categories.ToListAsync();
-            return View(categories);
+            var brands = await _context.Brands.ToListAsync();
+            return View(brands);
         }
 
-        public IActionResult Create() => View(new CategoryViewModel());
+        public IActionResult Create() => View(new BrandViewModel());
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CategoryViewModel vm)
+        public async Task<IActionResult> Create(BrandViewModel vm)
         {
             if (!ModelState.IsValid)
                 return View(vm);
 
-            if (_context.Categories.Any(c => c.Name == vm.Name))
+            if (_context.Brands.Any(b => b.Name == vm.Name))
             {
-                ModelState.AddModelError("Name", "A category with this name already exists.");
+                ModelState.AddModelError("Name", "A brand with this name already exists.");
                 return View(vm);
             }
 
-            _context.Categories.Add(new Category { Name = vm.Name });
+            _context.Brands.Add(new Brand { Name = vm.Name });
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
@@ -41,23 +42,23 @@ namespace ForkliftHub.Controllers
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
-            var category = await _context.Categories.FindAsync(id);
-            if (category == null) return NotFound();
+            var brand = await _context.Brands.FindAsync(id);
+            if (brand == null) return NotFound();
 
-            return View(new CategoryViewModel { Id = category.Id, Name = category.Name });
+            return View(new BrandViewModel { Id = brand.Id, Name = brand.Name });
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, CategoryViewModel vm)
+        public async Task<IActionResult> Edit(int id, BrandViewModel vm)
         {
             if (id != vm.Id) return NotFound();
             if (!ModelState.IsValid) return View(vm);
 
-            var category = await _context.Categories.FindAsync(id);
-            if (category == null) return NotFound();
+            var brand = await _context.Brands.FindAsync(id);
+            if (brand == null) return NotFound();
 
-            category.Name = vm.Name;
+            brand.Name = vm.Name;
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
@@ -65,20 +66,20 @@ namespace ForkliftHub.Controllers
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
-            var category = await _context.Categories.FindAsync(id);
-            if (category == null) return NotFound();
+            var brand = await _context.Brands.FindAsync(id);
+            if (brand == null) return NotFound();
 
-            return View(new CategoryViewModel { Id = category.Id, Name = category.Name });
+            return View(new BrandViewModel { Id = brand.Id, Name = brand.Name });
         }
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var category = await _context.Categories.FindAsync(id);
-            if (category != null)
+            var brand = await _context.Brands.FindAsync(id);
+            if (brand != null)
             {
-                _context.Categories.Remove(category);
+                _context.Brands.Remove(brand);
                 await _context.SaveChangesAsync();
             }
 

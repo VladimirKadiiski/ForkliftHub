@@ -2,8 +2,9 @@ using System.Diagnostics;
 using ForkliftHub.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ForkliftHub.Controllers
+namespace ForkliftHub.Areas.User.Controllers
 {
+    [Area("User")]
     public class HomeController(ILogger<HomeController> logger) : Controller
     {
         private readonly ILogger<HomeController> _logger = logger;
