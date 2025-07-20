@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace ForkliftHub.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = "Admin")]
+  
     public class MachineModelsController(ApplicationDbContext context) : Controller
     {
         private readonly ApplicationDbContext _context = context;

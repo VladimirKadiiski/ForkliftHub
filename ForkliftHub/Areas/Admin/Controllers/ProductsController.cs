@@ -9,6 +9,7 @@ using ForkliftHub.ViewModels;
 namespace ForkliftHub.Areas.Admin.Controllers
 {
     [Area("Admin")]
+   
     public class ProductsController(ApplicationDbContext context) : Controller
     {
         private readonly ApplicationDbContext _context = context;
@@ -23,8 +24,7 @@ namespace ForkliftHub.Areas.Admin.Controllers
             vm.ProductTypes = new SelectList(_context.ProductTypes, "Id", "Name", vm.ProductTypeId);
             return vm;
         }
-
-        // GET: /Products
+        
         public async Task<IActionResult> Index()
         {
             var products = await _context.Products
@@ -40,7 +40,6 @@ namespace ForkliftHub.Areas.Admin.Controllers
         }
 
 
-        // GET: Products/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
@@ -164,7 +163,6 @@ namespace ForkliftHub.Areas.Admin.Controllers
         }
 
 
-        // GET: Products/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
@@ -184,7 +182,6 @@ namespace ForkliftHub.Areas.Admin.Controllers
         }
 
 
-        // POST: Products/Delete
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
