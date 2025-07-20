@@ -1,11 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel.DataAnnotations;
 
 namespace ForkliftHub.ViewModels
 {
     public class ProductFormViewModel
     {
-        public int? Id { get; set; } 
+        public int? Id { get; set; }
 
         [Required, StringLength(120)]
         public string Name { get; set; } = null!;

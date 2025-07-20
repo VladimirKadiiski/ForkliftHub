@@ -1,7 +1,6 @@
 ﻿using ForkliftHub.Data;
 using ForkliftHub.Models;
 using ForkliftHub.ViewModels;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -9,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 namespace ForkliftHub.Areas.Admin.Controllers
 {
     [Area("Admin")]
-  
+
     public class MachineModelsController(ApplicationDbContext context) : Controller
     {
         private readonly ApplicationDbContext _context = context;

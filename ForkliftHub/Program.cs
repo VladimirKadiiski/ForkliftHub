@@ -80,7 +80,7 @@ using (var scope = app.Services.CreateScope())
 
     // Set admin credentials
     string adminEmail = "admin@forklifthub.com";
-    string adminPassword = "Admin@123"; 
+    string adminPassword = "Admin@123";
 
     // Check if the admin user exists
     var adminUser = await userManager.FindByEmailAsync(adminEmail);

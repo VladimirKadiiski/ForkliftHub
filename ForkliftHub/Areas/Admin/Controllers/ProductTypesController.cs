@@ -1,14 +1,13 @@
 ﻿using ForkliftHub.Data;
 using ForkliftHub.Models;
 using ForkliftHub.ViewModels;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace ForkliftHub.Areas.Admin.Controllers
 {
     [Area("Admin")]
-  
+
     public class ProductTypesController(ApplicationDbContext context) : Controller
     {
         private readonly ApplicationDbContext _context = context;

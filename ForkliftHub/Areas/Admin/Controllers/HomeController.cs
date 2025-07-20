@@ -1,6 +1,6 @@
-using System.Diagnostics;
 using ForkliftHub.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 
 namespace ForkliftHub.Areas.Admin.Controllers
 {

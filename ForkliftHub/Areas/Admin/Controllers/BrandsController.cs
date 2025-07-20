@@ -1,7 +1,6 @@
 ﻿using ForkliftHub.Data;
 using ForkliftHub.Models;
 using ForkliftHub.ViewModels;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 

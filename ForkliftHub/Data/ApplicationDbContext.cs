@@ -7,7 +7,7 @@ namespace ForkliftHub.Data
     public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<ApplicationUser>(options)
     {
         public DbSet<Brand> Brands { get; set; }
-        public DbSet<MachineModel> MachineModels{ get; set; }
+        public DbSet<MachineModel> MachineModels { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Engine> Engines { get; set; }
         public DbSet<MastType> MastTypes { get; set; }
