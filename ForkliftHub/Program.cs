@@ -25,6 +25,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 builder.Services.AddControllersWithViews(options =>
 {
     options.Filters.Add<AdminAreaAuthorization>();
+    options.Filters.Add<UserAreaAuthorization>();
 });
 
 
@@ -54,11 +55,16 @@ app.MapControllerRoute(
     name: "areas",
     pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
+
+app.MapControllerRoute(
+    name: "root-home",
+    pattern: "/",
+    defaults: new { controller = "Home", action = "Index" });
+
+
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}",
-    defaults: new { area = "User" });
-
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.MapRazorPages();
 
@@ -66,7 +72,7 @@ using (var scope = app.Services.CreateScope())
 {
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-    string[] roles = ["Admin", "Customer"];
+    string[] roles = ["Admin", "User", "Guest"];
 
     foreach (var role in roles)
     {

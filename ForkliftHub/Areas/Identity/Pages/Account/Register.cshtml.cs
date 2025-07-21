@@ -119,9 +119,9 @@ namespace ForkliftHub.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User created a new account with password.");
 
-                    if (await _roleManager.RoleExistsAsync("Customer"))
+                    if (await _roleManager.RoleExistsAsync("User"))
                     {
-                        await _userManager.AddToRoleAsync(user, "Customer");
+                        await _userManager.AddToRoleAsync(user, "User");
                     }
 
                     var userId = await _userManager.GetUserIdAsync(user);

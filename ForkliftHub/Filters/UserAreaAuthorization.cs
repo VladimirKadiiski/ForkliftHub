@@ -3,15 +3,15 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace ForkliftHub.Filters
 {
-    public class AdminAreaAuthorization : IAuthorizationFilter
+    public class UserAreaAuthorization : IAuthorizationFilter
     {
         public void OnAuthorization(AuthorizationFilterContext context)
         {
             var area = context.RouteData.Values["area"]?.ToString();
-            if (!string.Equals(area, "Admin", StringComparison.OrdinalIgnoreCase))
-                return;
 
-            if (string.Equals(area, "Admin", StringComparison.OrdinalIgnoreCase))
+            if (!string.Equals(area, "User", StringComparison.OrdinalIgnoreCase))
+                return;
+            if (string.Equals(area, "User", StringComparison.OrdinalIgnoreCase))
             {
                 var user = context.HttpContext.User;
 
@@ -20,7 +20,7 @@ namespace ForkliftHub.Filters
                     context.Result = new RedirectToPageResult("/Account/Login", new { area = "Identity" });
 
                 }
-                else if (!user.IsInRole("Admin"))
+                else if (!user.IsInRole("User"))
                 {
                     context.Result = new RedirectToPageResult("/Account/AccessDenied", new { area = "Identity" });
 

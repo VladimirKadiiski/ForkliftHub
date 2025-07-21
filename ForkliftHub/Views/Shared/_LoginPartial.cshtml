@@ -2,15 +2,38 @@
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
-<ul class="navbar-nav">
 @if (SignInManager.IsSignedIn(User))
 {
+    var isAdmin = User.IsInRole("Admin");
+    var isUser = User.IsInRole("User");
+
     <li class="nav-item">
-        <a  class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity?.Name!</a>
+        <a class="nav-link text-dark"
+           asp-area="Identity"
+           asp-page="/Account/Manage/Index"
+           title="Manage">
+            Hello @(isAdmin ? "Admin" : isUser ? "User" : User.Identity?.Name)!
+        </a>
     </li>
+
+    @* Optional: Show dashboard link *@
+    @if (isAdmin)
+    {
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="Admin" asp-controller="Home" asp-action="Index">Admin Dashboard</a>
+        </li>
+    }
+    else if (isUser)
+    {
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="User" asp-controller="Home" asp-action="Index">User Dashboard</a>
+        </li>
+    }
+
     <li class="nav-item">
-        <form  class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "User" })">
-            <button  type="submit" class="nav-link btn btn-link text-dark">Logout</button>
+        <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout"
+              asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+            <button type="submit" class="nav-link btn btn-link text-dark">Logout</button>
         </form>
     </li>
 }
@@ -23,4 +46,3 @@ else
         <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login</a>
     </li>
 }
-</ul>
