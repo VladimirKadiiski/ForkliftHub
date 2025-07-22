@@ -1,6 +1,8 @@
 using ForkliftHub.Data;
 using ForkliftHub.Filters;
 using ForkliftHub.Models;
+using ForkliftHub.Services;
+using ForkliftHub.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -28,6 +30,7 @@ builder.Services.AddControllersWithViews(options =>
     options.Filters.Add<UserAreaAuthorization>();
 });
 
+builder.Services.AddScoped<IProductService, ProductService>();
 
 var app = builder.Build();
 
