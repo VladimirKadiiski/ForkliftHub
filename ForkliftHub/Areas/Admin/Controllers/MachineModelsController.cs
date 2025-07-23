@@ -1,92 +1,60 @@
-﻿using ForkliftHub.Data;
-using ForkliftHub.Models;
+﻿using ForkliftHub.Services.Interfaces;
 using ForkliftHub.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 
 namespace ForkliftHub.Areas.Admin.Controllers
 {
     [Area("Admin")]
-
-    public class MachineModelsController(ApplicationDbContext context) : Controller
+    public class MachineModelsController(IMachineModelService machineModelService) : Controller
     {
-        private readonly ApplicationDbContext _context = context;
+        private readonly IMachineModelService _machineModelService = machineModelService;
 
-        // GET: MachineModels
         public async Task<IActionResult> Index()
         {
-            var models = await _context.MachineModels
-                .Include(m => m.Brand)
-                .ToListAsync();
+            var models = await _machineModelService.GetAllMachineModelsAsync();
             return View(models);
         }
 
-        // GET: MachineModels/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            var viewModel = new MachineModelViewModel
+            var vm = new MachineModelViewModel
             {
-                Brands = _context.Brands
-                    .Select(b => new SelectListItem { Value = b.Id.ToString(), Text = b.Name })
-                    .ToList()
+                Brands = (await _machineModelService.GetBrandsSelectListAsync()).ToList()
             };
-
-            return View(viewModel);
+            return View(vm);
         }
 
-        // POST: MachineModels/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(MachineModelViewModel vm)
         {
             if (!ModelState.IsValid)
             {
-                vm.Brands = _context.Brands
-                    .Select(b => new SelectListItem { Value = b.Id.ToString(), Text = b.Name })
-                    .ToList();
+                vm.Brands = (await _machineModelService.GetBrandsSelectListAsync()).ToList();
                 return View(vm);
             }
 
-            var model = new MachineModel
-            {
-                Name = vm.Name,
-                BrandId = vm.BrandId
-            };
-
-            if (_context.MachineModels.Any(mm => mm.Name == vm.Name))
+            if (await _machineModelService.MachineModelExistsAsync(vm.Name))
             {
                 ModelState.AddModelError("Name", "A model with this name already exists.");
+                vm.Brands = (await _machineModelService.GetBrandsSelectListAsync()).ToList();
                 return View(vm);
             }
 
-            _context.MachineModels.Add(model);
-            await _context.SaveChangesAsync();
+            await _machineModelService.CreateMachineModelAsync(vm);
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: MachineModels/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
 
-            var model = await _context.MachineModels.FindAsync(id);
-            if (model == null) return NotFound();
-
-            var vm = new MachineModelViewModel
-            {
-                Id = model.Id,
-                Name = model.Name,
-                BrandId = model.BrandId,
-                Brands = _context.Brands
-                    .Select(b => new SelectListItem { Value = b.Id.ToString(), Text = b.Name })
-                    .ToList()
-            };
+            var vm = await _machineModelService.GetMachineModelByIdAsync(id.Value);
+            if (vm == null) return NotFound();
 
             return View(vm);
         }
 
-        // POST: MachineModels/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, MachineModelViewModel vm)
@@ -95,64 +63,37 @@ namespace ForkliftHub.Areas.Admin.Controllers
 
             if (!ModelState.IsValid)
             {
-                vm.Brands = _context.Brands
-                    .Select(b => new SelectListItem { Value = b.Id.ToString(), Text = b.Name })
-                    .ToList();
+                vm.Brands = (await _machineModelService.GetBrandsSelectListAsync()).ToList();
                 return View(vm);
             }
 
-            var model = await _context.MachineModels.FindAsync(id);
-            if (model == null) return NotFound();
+            if (await _machineModelService.MachineModelExistsAsync(vm.Name, vm.Id))
+            {
+                ModelState.AddModelError("Name", "A model with this name already exists.");
+                vm.Brands = (await _machineModelService.GetBrandsSelectListAsync()).ToList();
+                return View(vm);
+            }
 
-            model.Name = vm.Name;
-            model.BrandId = vm.BrandId;
-
-            _context.MachineModels.Update(model);
-            await _context.SaveChangesAsync();
-
+            await _machineModelService.UpdateMachineModelAsync(vm);
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: MachineModels/Delete/5 
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-                return NotFound();
+            if (id == null) return NotFound();
 
-            var model = await _context.MachineModels
-                .Include(m => m.Brand)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (model == null)
-                return NotFound();
-
-            var vm = new MachineModelDeleteViewModel
-            {
-                Id = model.Id,
-                Name = model.Name,
-                BrandName = model.Brand.Name
-            };
+            var vm = await _machineModelService.GetMachineModelDeleteViewModelAsync(id.Value);
+            if (vm == null) return NotFound();
 
             return View(vm);
         }
 
-        // POST: MachineModels/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var model = await _context.MachineModels.FindAsync(id);
-            if (model != null)
-            {
-                _context.MachineModels.Remove(model);
-                await _context.SaveChangesAsync();
-            }
-
+            await _machineModelService.DeleteMachineModelAsync(id);
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool ModelExists(int id)
-        {
-            return _context.MachineModels.Any(e => e.Id == id);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ForkliftHub.Models.MachineModel>
+﻿@model IEnumerable<ForkliftHub.ViewModels.MachineModelViewModel>
 
 <h1>Models</h1>
 
@@ -17,7 +17,7 @@
         {
             <tr>
                 <td>@item.Name</td>
-                <td>@item.Brand?.Name</td>
+                <td>@item.BrandId</td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Edit</a>
                     <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>

@@ -35,6 +35,7 @@ builder.Services.AddScoped<IBrandService, BrandService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IEngineService, EngineService>();
 builder.Services.AddScoped<IMastTypeService, MastTypeService>();
+builder.Services.AddScoped<IMachineModelService, MachineModelService>();
 
 
 var app = builder.Build();
