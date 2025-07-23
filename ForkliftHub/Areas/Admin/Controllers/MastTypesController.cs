@@ -1,20 +1,17 @@
-﻿using ForkliftHub.Data;
-using ForkliftHub.Models;
+﻿using ForkliftHub.Services.Interfaces;
 using ForkliftHub.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace ForkliftHub.Areas.Admin.Controllers
 {
     [Area("Admin")]
-
-    public class MastTypesController(ApplicationDbContext context) : Controller
+    public class MastTypesController(IMastTypeService mastTypeService) : Controller
     {
-        private readonly ApplicationDbContext _context = context;
+        private readonly IMastTypeService _mastTypeService = mastTypeService;
 
         public async Task<IActionResult> Index()
         {
-            var types = await _context.MastTypes.ToListAsync();
+            var types = await _mastTypeService.GetAllMastTypesAsync();
             return View(types);
         }
 
@@ -24,16 +21,16 @@ namespace ForkliftHub.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(MastTypeViewModel vm)
         {
-            if (!ModelState.IsValid) return View(vm);
+            if (!ModelState.IsValid)
+                return View(vm);
 
-            if (_context.MastTypes.Any(mt => mt.Name == vm.Name))
+            if (await _mastTypeService.MastTypeExistsAsync(vm.Name))
             {
                 ModelState.AddModelError("Name", "A type of mast with this name already exists.");
                 return View(vm);
             }
 
-            _context.MastTypes.Add(new MastType { Name = vm.Name });
-            await _context.SaveChangesAsync();
+            await _mastTypeService.CreateMastTypeAsync(vm);
             return RedirectToAction(nameof(Index));
         }
 
@@ -41,10 +38,10 @@ namespace ForkliftHub.Areas.Admin.Controllers
         {
             if (id == null) return NotFound();
 
-            var mastType = await _context.MastTypes.FindAsync(id);
+            var mastType = await _mastTypeService.GetMastTypeByIdAsync(id.Value);
             if (mastType == null) return NotFound();
 
-            return View(new MastTypeViewModel { Id = mastType.Id, Name = mastType.Name });
+            return View(mastType);
         }
 
         [HttpPost]
@@ -52,13 +49,16 @@ namespace ForkliftHub.Areas.Admin.Controllers
         public async Task<IActionResult> Edit(int id, MastTypeViewModel vm)
         {
             if (id != vm.Id) return NotFound();
+
             if (!ModelState.IsValid) return View(vm);
 
-            var mastType = await _context.MastTypes.FindAsync(id);
-            if (mastType == null) return NotFound();
+            if (await _mastTypeService.MastTypeExistsAsync(vm.Name, vm.Id))
+            {
+                ModelState.AddModelError("Name", "A type of mast with this name already exists.");
+                return View(vm);
+            }
 
-            mastType.Name = vm.Name;
-            await _context.SaveChangesAsync();
+            await _mastTypeService.UpdateMastTypeAsync(vm);
             return RedirectToAction(nameof(Index));
         }
 
@@ -66,23 +66,17 @@ namespace ForkliftHub.Areas.Admin.Controllers
         {
             if (id == null) return NotFound();
 
-            var mastType = await _context.MastTypes.FindAsync(id);
+            var mastType = await _mastTypeService.GetMastTypeByIdAsync(id.Value);
             if (mastType == null) return NotFound();
 
-            return View(new MastTypeViewModel { Id = mastType.Id, Name = mastType.Name });
+            return View(mastType);
         }
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var mastType = await _context.MastTypes.FindAsync(id);
-            if (mastType != null)
-            {
-                _context.MastTypes.Remove(mastType);
-                await _context.SaveChangesAsync();
-            }
-
+            await _mastTypeService.DeleteMastTypeAsync(id);
             return RedirectToAction(nameof(Index));
         }
     }
