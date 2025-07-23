@@ -1,10 +1,12 @@
 using ForkliftHub.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
 namespace ForkliftHub.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin")]
     public class HomeController(ILogger<HomeController> logger) : Controller
     {
         private readonly ILogger<HomeController> _logger = logger;

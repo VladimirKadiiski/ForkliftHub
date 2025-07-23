@@ -11,6 +11,7 @@
     <title>@ViewData["Title"] - ForkliftHub</title>
 
     <!-- Bootstrap & Custom CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/ForkliftHub.styles.css" asp-append-version="true" />
@@ -19,6 +20,7 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
+               
                 <a class="navbar-brand"
                    asp-area=""
                    asp-controller="Home"
@@ -36,35 +38,24 @@
                             if (User.IsInRole("Admin"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="Admin" asp-controller="Home" asp-action="Index">Admin Home</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="Admin" asp-controller="Products" asp-action="Index">Admin Products</a>
+                                    <a class="nav-link text-dark" asp-area="Admin" asp-controller="Home" asp-action="Index">Admin Dashboard</a>
                                 </li>
                             }
                             else if (User.IsInRole("User"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="User" asp-controller="Home" asp-action="Index">User Home</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="User" asp-controller="Products" asp-action="Index">User Products</a>
+                                    <a class="nav-link text-dark" asp-area="User" asp-controller="Products" asp-action="Index"> Products list with prices</a>
                                 </li>
                             }
                         }
                         else
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                            </li>
+                            
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Products" asp-action="Index">Products</a>
                             </li>
                         }
 
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
                     </ul>
 
                     <!-- Login Partial Goes Here -->

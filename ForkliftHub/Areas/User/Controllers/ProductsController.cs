@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ForkliftHub.Areas.User.Controllers
 {
     [Area("User")]
-    [Authorize(Roles = "User, Admin")]
+    [Authorize(Roles = "User")]
     public class ProductsController(IProductService productService) : Controller
     {
         private readonly IProductService _productService = productService;

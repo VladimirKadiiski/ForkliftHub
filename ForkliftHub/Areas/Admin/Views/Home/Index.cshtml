@@ -2,7 +2,67 @@
     ViewData["Title"] = "Admin Dashboard";
 }
 
-<div class="container mt-4">
-    <h1 class="mb-3">Welcome, @User.Identity?.Name!</h1>
-    <p>This is your dashboard. Use the navigation to manage products, brands, users, and more.</p>
+<h1 class="mb-4 text-center">Admin Dashboard</h1>
+
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+    <div class="col">
+        <div class="card shadow-sm h-100 text-center">
+            <div class="card-body">
+                <i class="bi bi-tags fs-1 text-primary"></i>
+                <h5 class="card-title mt-3">Brands</h5>
+                <p class="card-text">Manage forklift brands</p>
+                <a asp-area="Admin" asp-controller="Brands" asp-action="Index" class="btn btn-outline-primary w-100">Go to Brands</a>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card shadow-sm h-100 text-center">
+            <div class="card-body">
+                <i class="bi bi-list-columns-reverse fs-1 text-success"></i>
+                <h5 class="card-title mt-3">Categories</h5>
+                <p class="card-text">Manage product categories</p>
+                <a asp-area="Admin" asp-controller="Categories" asp-action="Index" class="btn btn-outline-success w-100">Go to Categories</a>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card shadow-sm h-100 text-center">
+            <div class="card-body">
+                <i class="bi bi-speedometer2 fs-1 text-danger"></i>
+                <h5 class="card-title mt-3">Engines</h5>
+                <p class="card-text">Manage engine types</p>
+                <a asp-area="Admin" asp-controller="Engines" asp-action="Index" class="btn btn-outline-danger w-100">Go to Engines</a>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card shadow-sm h-100 text-center">
+            <div class="card-body">
+                <i class="bi bi-boxes fs-1 text-warning"></i>
+                <h5 class="card-title mt-3">Mast Types</h5>
+                <p class="card-text">Manage mast types</p>
+                <a asp-area="Admin" asp-controller="MastTypes" asp-action="Index" class="btn btn-outline-warning w-100">Go to Mast Types</a>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card shadow-sm h-100 text-center">
+            <div class="card-body">
+                <i class="bi bi-diagram-3 fs-1 text-info"></i>
+                <h5 class="card-title mt-3">Product Types</h5>
+                <p class="card-text">Manage product types</p>
+                <a asp-area="Admin" asp-controller="ProductTypes" asp-action="Index" class="btn btn-outline-info w-100">Go to Product Types</a>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card shadow-sm h-100 text-center">
+            <div class="card-body">
+                <i class="bi bi-forklift fs-1 text-secondary"></i>
+                <h5 class="card-title mt-3">Products</h5>
+                <p class="card-text">Manage forklift products</p>
+                <a asp-area="Admin" asp-controller="Products" asp-action="Index" class="btn btn-outline-secondary w-100">Go to Products</a>
+            </div>
+        </div>
+    </div>
 </div>
