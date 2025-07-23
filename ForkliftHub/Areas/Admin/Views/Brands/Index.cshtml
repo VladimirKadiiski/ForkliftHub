@@ -1,4 +1,9 @@
-﻿@model IEnumerable<ForkliftHub.Models.Brand>
+﻿@{
+    ViewData["Title"] = "Manage Brands";
+}
+
+
+@model IEnumerable<ForkliftHub.ViewModels.BrandViewModel>
 
 <h1>Brands</h1>
 
@@ -17,6 +22,7 @@
                 </td>
             </tr>
         }
+
     </tbody>
 </table>
 

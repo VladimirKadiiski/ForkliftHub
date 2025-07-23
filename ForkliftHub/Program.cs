@@ -31,6 +31,8 @@ builder.Services.AddControllersWithViews(options =>
 });
 
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IBrandService, BrandService>();
+
 
 var app = builder.Build();
 
