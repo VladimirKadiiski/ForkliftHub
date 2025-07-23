@@ -1,20 +1,18 @@
-﻿using ForkliftHub.Data;
-using ForkliftHub.Models;
+﻿using ForkliftHub.Services.Interfaces;
 using ForkliftHub.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Build.Framework;
 
 namespace ForkliftHub.Areas.Admin.Controllers
 {
     [Area("Admin")]
-
-    public class EnginesController(ApplicationDbContext context) : Controller
+    public class EnginesController(IEngineService engineService) : Controller
     {
-        private readonly ApplicationDbContext _context = context;
+        private readonly IEngineService _engineService = engineService;
 
         public async Task<IActionResult> Index()
         {
-            var engines = await _context.Engines.ToListAsync();
+            var engines = await _engineService.GetAllEnginesAsync();
             return View(engines);
         }
 
@@ -26,14 +24,13 @@ namespace ForkliftHub.Areas.Admin.Controllers
         {
             if (!ModelState.IsValid) return View(vm);
 
-            if (_context.Engines.Any(e => e.Type == vm.Name))
+            if (await _engineService.EngineExistsAsync(vm.Name))
             {
                 ModelState.AddModelError("Name", "An engine with this name already exists.");
                 return View(vm);
             }
 
-            _context.Engines.Add(new Engine { Type = vm.Name });
-            await _context.SaveChangesAsync();
+            await _engineService.CreateEngineAsync(vm);
             return RedirectToAction(nameof(Index));
         }
 
@@ -41,10 +38,10 @@ namespace ForkliftHub.Areas.Admin.Controllers
         {
             if (id == null) return NotFound();
 
-            var engine = await _context.Engines.FindAsync(id);
-            if (engine == null) return NotFound();
+            var vm = await _engineService.GetEngineByIdAsync(id.Value);
+            if (vm == null) return NotFound();
 
-            return View(new EngineViewModel { Id = engine.Id, Name = engine.Type });
+            return View(vm);
         }
 
         [HttpPost]
@@ -54,11 +51,13 @@ namespace ForkliftHub.Areas.Admin.Controllers
             if (id != vm.Id) return NotFound();
             if (!ModelState.IsValid) return View(vm);
 
-            var engine = await _context.Engines.FindAsync(id);
-            if (engine == null) return NotFound();
+            if (await _engineService.EngineExistsAsync(vm.Name, id))
+            {
+                ModelState.AddModelError("Name", "An engine with this name already exists.");
+                return View(vm);
+            }
 
-            engine.Type = vm.Name;
-            await _context.SaveChangesAsync();
+            await _engineService.UpdateEngineAsync(vm);
             return RedirectToAction(nameof(Index));
         }
 
@@ -66,23 +65,17 @@ namespace ForkliftHub.Areas.Admin.Controllers
         {
             if (id == null) return NotFound();
 
-            var engine = await _context.Engines.FindAsync(id);
-            if (engine == null) return NotFound();
+            var vm = await _engineService.GetEngineByIdAsync(id.Value);
+            if (vm == null) return NotFound();
 
-            return View(new EngineViewModel { Id = engine.Id, Name = engine.Type });
+            return View(vm);
         }
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var engine = await _context.Engines.FindAsync(id);
-            if (engine != null)
-            {
-                _context.Engines.Remove(engine);
-                await _context.SaveChangesAsync();
-            }
-
+            await _engineService.DeleteEngineAsync(id);
             return RedirectToAction(nameof(Index));
         }
     }
