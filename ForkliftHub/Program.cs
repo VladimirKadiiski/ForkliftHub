@@ -38,6 +38,8 @@ builder.Services.AddScoped<IMastTypeService, MastTypeService>();
 builder.Services.AddScoped<IMachineModelService, MachineModelService>();
 builder.Services.AddScoped<IProductTypeService, ProductTypeService>();
 builder.Services.AddScoped<IHomeService, HomeService>();
+builder.Services.AddScoped<IAdminDashboardService, AdminDashboardService>();
+builder.Services.AddScoped<IUserDashboardService, UserDashboardService>();
 
 var app = builder.Build();
 

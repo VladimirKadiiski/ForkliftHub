@@ -1,30 +1,19 @@
-using ForkliftHub.Models;
+using ForkliftHub.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
 
 namespace ForkliftHub.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Authorize(Roles = "Admin")]
-    public class HomeController(ILogger<HomeController> logger) : Controller
+    public class HomeController(IAdminDashboardService dashboardService) : Controller
     {
-        private readonly ILogger<HomeController> _logger = logger;
+        private readonly IAdminDashboardService _dashboardService = dashboardService;
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            var vm = await _dashboardService.GetDashboardDataAsync();
+            return View(vm);
         }
     }
 }

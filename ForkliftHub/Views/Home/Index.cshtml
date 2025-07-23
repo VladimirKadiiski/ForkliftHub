@@ -1,11 +1,32 @@
-﻿
+﻿@model ForkliftHub.ViewModels.ProductListViewModel
+
 @{
     ViewData["Title"] = "Home";
 }
 
-<div class="container mt-5 text-center">
-    <h1 class="display-4 fw-bold">Welcome to ForkliftHub</h1>
-    <p class="lead">Browse our top-quality new and used forklifts</p>
+<h1 class="mb-4">Welcome to ForkliftHub</h1>
 
-    <a class="btn btn-primary btn-lg mt-3" asp-area="" asp-controller="Products" asp-action="Index">Shop Now</a>
-</div>
+@if (Model.Products.Any())
+{
+    <div class="row">
+        @foreach (var product in Model.Products)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">@product.Name</h5>
+                        <p class="card-text">
+                            Brand: @product.Brand?.Name <br />
+                            Model: @product.MachineModel?.Name
+                        </p>
+                        <a href="@Url.Action("Details", "Products", new { id = product.Id })" class="btn btn-primary">Details</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <p>No products available yet.</p>
+}

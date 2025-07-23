@@ -1,28 +1,23 @@
 using ForkliftHub.Models;
+using ForkliftHub.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
 
 namespace ForkliftHub.Areas.User.Controllers
 {
     [Area("User")]
-    public class HomeController(ILogger<HomeController> logger) : Controller
+    [Authorize(Roles = "User")]
+    public class HomeController(IUserDashboardService dashboardService, UserManager<ApplicationUser> userManager) : Controller
     {
-        private readonly ILogger<HomeController> _logger = logger;
+        private readonly IUserDashboardService _dashboardService = dashboardService;
+        private readonly UserManager<ApplicationUser> _userManager = userManager;
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            var user = await _userManager.GetUserAsync(User);
+            var vm = await _dashboardService.GetDashboardDataAsync(user.Id);
+            return View(vm);
         }
     }
 }

@@ -3,6 +3,21 @@
 }
 
 <div class="container mt-4">
-    <h1 class="mb-3">Welcome, @User.Identity?.Name!</h1>
-    <p>Explore our new and used forklifts. View your orders or update your profile.</p>
+    <h2 class="mb-4 text-success">Welcome to Your Dashboard</h2>
+
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Browse Forklifts</h5>
+            <p class="card-text">Explore new and used forklifts available on ForkliftHub.</p>
+            <a asp-area="User" asp-controller="Products" asp-action="Index" class="btn btn-outline-success">Browse Forklifts</a>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+            <h5 class="card-title">Manage Your Account</h5>
+            <p class="card-text">Update your profile or change your password.</p>
+            <a asp-area="Identity" asp-page="/Account/Manage/Index" class="btn btn-outline-primary">Account Settings</a>
+        </div>
+    </div>
 </div>
