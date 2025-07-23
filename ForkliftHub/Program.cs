@@ -36,6 +36,7 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IEngineService, EngineService>();
 builder.Services.AddScoped<IMastTypeService, MastTypeService>();
 builder.Services.AddScoped<IMachineModelService, MachineModelService>();
+builder.Services.AddScoped<IProductTypeService, ProductTypeService>();
 
 
 var app = builder.Build();

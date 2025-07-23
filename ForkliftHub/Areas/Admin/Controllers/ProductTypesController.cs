@@ -1,21 +1,18 @@
-﻿using ForkliftHub.Data;
-using ForkliftHub.Models;
+﻿using ForkliftHub.Services.Interfaces;
 using ForkliftHub.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace ForkliftHub.Areas.Admin.Controllers
 {
     [Area("Admin")]
-
-    public class ProductTypesController(ApplicationDbContext context) : Controller
+    public class ProductTypesController(IProductTypeService productTypeService) : Controller
     {
-        private readonly ApplicationDbContext _context = context;
+        private readonly IProductTypeService _productTypeService = productTypeService;
 
         public async Task<IActionResult> Index()
         {
-            var productTypes = await _context.ProductTypes.ToListAsync();
-            return View(productTypes);
+            var types = await _productTypeService.GetAllAsync();
+            return View(types);
         }
 
         public IActionResult Create() => View(new ProductTypeViewModel());
@@ -27,24 +24,24 @@ namespace ForkliftHub.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View(vm);
 
-            if (_context.ProductTypes.Any(pt => pt.Name == vm.Name))
+            if (await _productTypeService.ExistsByNameAsync(vm.Name))
             {
                 ModelState.AddModelError("Name", "A type of product with this name already exists.");
                 return View(vm);
             }
 
-            _context.ProductTypes.Add(new ProductType { Name = vm.Name });
-            await _context.SaveChangesAsync();
+            await _productTypeService.CreateAsync(vm);
             return RedirectToAction(nameof(Index));
         }
 
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
-            var type = await _context.ProductTypes.FindAsync(id);
-            if (type == null) return NotFound();
 
-            return View(new ProductTypeViewModel { Id = type.Id, Name = type.Name });
+            var vm = await _productTypeService.GetByIdAsync(id.Value);
+            if (vm == null) return NotFound();
+
+            return View(vm);
         }
 
         [HttpPost]
@@ -52,36 +49,34 @@ namespace ForkliftHub.Areas.Admin.Controllers
         public async Task<IActionResult> Edit(int id, ProductTypeViewModel vm)
         {
             if (id != vm.Id) return NotFound();
+
             if (!ModelState.IsValid) return View(vm);
 
-            var type = await _context.ProductTypes.FindAsync(id);
-            if (type == null) return NotFound();
+            if (await _productTypeService.ExistsByNameAsync(vm.Name, vm.Id))
+            {
+                ModelState.AddModelError("Name", "A type of product with this name already exists.");
+                return View(vm);
+            }
 
-            type.Name = vm.Name;
-            await _context.SaveChangesAsync();
+            await _productTypeService.UpdateAsync(vm);
             return RedirectToAction(nameof(Index));
         }
 
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
-            var type = await _context.ProductTypes.FindAsync(id);
-            if (type == null) return NotFound();
 
-            return View(new ProductTypeViewModel { Id = type.Id, Name = type.Name });
+            var vm = await _productTypeService.GetByIdAsync(id.Value);
+            if (vm == null) return NotFound();
+
+            return View(vm);
         }
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var type = await _context.ProductTypes.FindAsync(id);
-            if (type != null)
-            {
-                _context.ProductTypes.Remove(type);
-                await _context.SaveChangesAsync();
-            }
-
+            await _productTypeService.DeleteAsync(id);
             return RedirectToAction(nameof(Index));
         }
     }
