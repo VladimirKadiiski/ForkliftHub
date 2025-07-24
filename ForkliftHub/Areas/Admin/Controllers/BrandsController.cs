@@ -1,4 +1,5 @@
-﻿using ForkliftHub.Services.Interfaces;
+﻿using ForkliftHub.Services;
+using ForkliftHub.Services.Interfaces;
 using ForkliftHub.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,6 +24,12 @@ namespace ForkliftHub.Areas.Admin.Controllers
         {
             if (!ModelState.IsValid)
                 return View(vm);
+
+            if (await _brandService.BrandExistsAsync(vm.Name))
+            {
+                ModelState.AddModelError("Name", "A brand with this name already exists.");
+                return View(vm);
+            }
 
             await _brandService.CreateAsync(vm);
             return RedirectToAction(nameof(Index));

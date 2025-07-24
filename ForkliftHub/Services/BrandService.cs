@@ -23,10 +23,15 @@ namespace ForkliftHub.Services
             return brand == null ? null : new BrandViewModel { Id = brand.Id, Name = brand.Name };
         }
 
+        public async Task<bool> BrandExistsAsync(string name, int? excludeId = null)
+        {
+            return await _context.Brands
+                .AnyAsync(b => b.Name == name && (!excludeId.HasValue || b.Id != excludeId.Value));
+        }
+
         public async Task CreateAsync(BrandViewModel vm)
         {
-            var brand = new Brand { Name = vm.Name };
-            _context.Brands.Add(brand);
+            _context.Brands.Add(new Brand { Name = vm.Name });
             await _context.SaveChangesAsync();
         }
 
