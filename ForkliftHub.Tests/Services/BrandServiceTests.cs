@@ -91,5 +91,38 @@ namespace ForkliftHub.Tests.Services
             var brand = await context.Brands.FindAsync(1);
             brand.Should().BeNull();
         }
+
+        [Fact]
+        public async Task BrandExistsAsync_ShouldReturnTrueIfExists()
+        {
+            // Arrange
+            var context = await GetInMemoryDbContextAsync();
+            var service = new BrandService(context);
+            context.Brands.Add(new Brand { Name = "Exists" });
+            await context.SaveChangesAsync();
+                        
+            // Act
+            var result = await service.BrandExistsAsync("Exists");
+
+            // Assert
+            Assert.True(result);
+        }
+
+        [Fact]
+        public async Task BrandExistsAsync_ShouldExcludeId()
+        {
+            // Arrange
+            var context = await GetInMemoryDbContextAsync();
+            var service = new BrandService(context);
+            var brand = new Brand { Name = "Unique" };
+            context.Brands.Add(brand);
+            await context.SaveChangesAsync();
+                        
+            // Act
+            var result = await service.BrandExistsAsync("Unique", excludeId: brand.Id);
+
+            // Assert
+            Assert.False(result);
+        }
     }
 }
