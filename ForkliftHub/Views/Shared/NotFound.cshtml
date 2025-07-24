@@ -1,0 +1,15 @@
+﻿@model ForkliftHub.ViewModels.ErrorViewModel
+
+@{
+    ViewData["Title"] = "Page Not Found";
+}
+
+<h1 class="text-danger">404 - Not Found</h1>
+<p>@Model.Message</p>
+
+@if (Model.ShowRequestId)
+{
+    <p><small>Request ID: @Model.RequestId</small></p>
+}
+
+<a href="/">Return to Home</a>
