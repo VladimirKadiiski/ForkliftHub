@@ -1,0 +1,6 @@
+@ForkliftHub.API_HostAddress = http://localhost:5208
+
+GET {{ForkliftHub.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

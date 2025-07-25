@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ForkliftHub.Controllers
 {
+    [ApiExplorerSettings(IgnoreApi = true)]
+
     public class ErrorController : Controller
     {
         [Route("Error/404")]
