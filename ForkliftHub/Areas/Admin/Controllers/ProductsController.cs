@@ -97,5 +97,15 @@ namespace ForkliftHub.Areas.Admin.Controllers
             TempData["SuccessMessage"] = "Product deleted.";
             return RedirectToAction(nameof(Index));
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CleanupImages()
+        {
+            int removedCount = await _productService.CleanupMissingProductImagesAsync();
+            TempData["CleanupMessage"] = $"{removedCount} orphaned image record(s) removed.";
+            return RedirectToAction(nameof(Index));
+        }
+
     }
 }

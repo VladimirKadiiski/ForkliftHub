@@ -10,47 +10,41 @@ namespace ForkliftHub.ViewModels
         [Required, StringLength(120)]
         public string Name { get; set; } = null!;
 
-        [Required]
-        [Display(Name = "Brand")]
+        [Required, Display(Name = "Brand")]
         public int BrandId { get; set; }
 
-        [Required]
-        [Display(Name = "Model")]
+        [Required, Display(Name = "Model")]
         public int MachineModelId { get; set; }
 
-        [Required]
-        [Display(Name = "Category")]
+        [Required, Display(Name = "Category")]
         public int CategoryId { get; set; }
 
-        [Required]
-        [Display(Name = "Engine")]
+        [Required, Display(Name = "Engine")]
         public int EngineId { get; set; }
 
-        [Required]
-        [Display(Name = "Mast Type")]
+        [Required, Display(Name = "Mast Type")]
         public int MastTypeId { get; set; }
 
-        [Range(0, 10000)]
+        [Range(0, 10000), Display(Name = "Lifting Height (m)")]
         public decimal LiftingHeight { get; set; }
 
-        [Range(0, 10000)]
+        [Range(0, 10000), Display(Name = "Closed Height (m)")]
         public decimal ClosedHeight { get; set; }
 
         [Required, StringLength(1000)]
         public string Description { get; set; } = null!;
 
-        [Url]
-        [Display(Name = "Image URL")]
-        public string? ImageUrl { get; set; }
+        public IFormFile[]? ImageFiles { get; set; }
 
-        [Range(0.01, 1000000)]
+        public List<string>? ExistingImageUrls { get; set; }
+
+        [Range(0.01, 1000000), Display(Name = "Price (€)")]
         public decimal Price { get; set; }
 
         [Range(0, 10000)]
         public int Stock { get; set; }
 
-        [Required]
-        [Display(Name = "Product Type")]
+        [Required, Display(Name = "Product Type")]
         public int ProductTypeId { get; set; }
 
         // Dropdowns

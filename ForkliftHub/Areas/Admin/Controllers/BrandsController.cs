@@ -1,5 +1,4 @@
-﻿using ForkliftHub.Services;
-using ForkliftHub.Services.Interfaces;
+﻿using ForkliftHub.Services.Interfaces;
 using ForkliftHub.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 

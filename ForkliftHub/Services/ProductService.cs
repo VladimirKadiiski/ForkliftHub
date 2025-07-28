@@ -7,10 +7,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ForkliftHub.Services
 {
-    public class ProductService(ApplicationDbContext context) : IProductService
+    public class ProductService(ApplicationDbContext context, IWebHostEnvironment environment) : IProductService
     {
         private readonly ApplicationDbContext _context = context;
-
+        private readonly IWebHostEnvironment _environment = environment;
+                
         public async Task<ProductFormViewModel> GetProductFormViewModelAsync(int? id = null)
         {
             var brands = await _context.Brands.OrderBy(b => b.Name)
@@ -50,7 +51,11 @@ namespace ForkliftHub.Services
                 };
             }
 
-            var product = await _context.Products.AsNoTracking().FirstOrDefaultAsync(p => p.Id == id.Value);
+            var product = await _context.Products
+                .Include(p => p.ProductImages)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(p => p.Id == id.Value);
+
             if (product == null) return null;
 
             return new ProductFormViewModel
@@ -68,7 +73,8 @@ namespace ForkliftHub.Services
                 Stock = product.Stock,
                 LiftingHeight = product.LiftingHeight,
                 ClosedHeight = product.ClosedHeight,
-                ImageUrl = product.ImageUrl,
+
+                ExistingImageUrls = product.ProductImages.Select(pi => pi.ImageUrl).ToList(),
 
                 Brands = new SelectList(brands, "Value", "Text"),
                 Categories = new SelectList(categories, "Value", "Text"),
@@ -95,8 +101,28 @@ namespace ForkliftHub.Services
                 Stock = viewModel.Stock,
                 LiftingHeight = viewModel.LiftingHeight,
                 ClosedHeight = viewModel.ClosedHeight,
-                ImageUrl = viewModel.ImageUrl,
+                ProductImages = new List<ProductImage>()
             };
+
+            if (viewModel.ImageFiles != null && viewModel.ImageFiles.Length != 0)
+            {
+                var uploadsFolder = Path.Combine(_environment.WebRootPath, "images/products");
+                Directory.CreateDirectory(uploadsFolder);
+
+                foreach (var file in viewModel.ImageFiles)
+                {
+                    var uniqueFileName = Guid.NewGuid() + Path.GetExtension(file.FileName);
+                    var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    using var stream = new FileStream(filePath, FileMode.Create);
+                    await file.CopyToAsync(stream);
+
+                    product.ProductImages.Add(new ProductImage
+                    {
+                        ImageUrl = $"/images/products/{uniqueFileName}"
+                    });
+                }
+            }
 
             _context.Products.Add(product);
             await _context.SaveChangesAsync();
@@ -104,7 +130,10 @@ namespace ForkliftHub.Services
 
         public async Task<bool> UpdateProductAsync(ProductFormViewModel viewModel)
         {
-            var product = await _context.Products.FindAsync(viewModel.Id);
+            var product = await _context.Products
+                .Include(p => p.ProductImages)
+                .FirstOrDefaultAsync(p => p.Id == viewModel.Id);
+
             if (product == null) return false;
 
             product.Name = viewModel.Name;
@@ -119,7 +148,26 @@ namespace ForkliftHub.Services
             product.Stock = viewModel.Stock;
             product.LiftingHeight = viewModel.LiftingHeight;
             product.ClosedHeight = viewModel.ClosedHeight;
-            product.ImageUrl = viewModel.ImageUrl;
+
+            if (viewModel.ImageFiles != null && viewModel.ImageFiles.Length != 0)
+            {
+                var uploadsFolder = Path.Combine(_environment.WebRootPath, "images/products");
+                Directory.CreateDirectory(uploadsFolder);
+
+                foreach (var file in viewModel.ImageFiles)
+                {
+                    var uniqueFileName = Guid.NewGuid() + Path.GetExtension(file.FileName);
+                    var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    using var stream = new FileStream(filePath, FileMode.Create);
+                    await file.CopyToAsync(stream);
+
+                    product.ProductImages.Add(new ProductImage
+                    {
+                        ImageUrl = $"/images/products/{uniqueFileName}"
+                    });
+                }
+            }
 
             await _context.SaveChangesAsync();
             return true;
@@ -127,13 +175,50 @@ namespace ForkliftHub.Services
 
         public async Task DeleteProductAsync(int id)
         {
-            var product = await _context.Products.FindAsync(id);
+            var product = await _context.Products
+                .Include(p => p.ProductImages)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
             if (product != null)
             {
+                foreach (var image in product.ProductImages)
+                {
+                    var filePath = Path.Combine(_environment.WebRootPath, image.ImageUrl.TrimStart('/').Replace("/", Path.DirectorySeparatorChar.ToString()));
+
+                    if (File.Exists(filePath))
+                    {
+                        File.Delete(filePath);
+                    }
+                }
+
                 _context.Products.Remove(product);
                 await _context.SaveChangesAsync();
             }
         }
+
+        public async Task<int> CleanupMissingProductImagesAsync()
+        {
+            var images = await _context.ProductImages.ToListAsync();
+            int removedCount = 0;
+
+            foreach (var image in images)
+            {
+                var filePath = Path.Combine(_environment.WebRootPath, image.ImageUrl.TrimStart('/').Replace("/", Path.DirectorySeparatorChar.ToString()));
+                if (!File.Exists(filePath))
+                {
+                    _context.ProductImages.Remove(image);
+                    removedCount++;
+                }
+            }
+
+            if (removedCount > 0)
+            {
+                await _context.SaveChangesAsync();
+            }
+
+            return removedCount;
+        }
+
 
         public async Task<Product?> GetProductDetailsAsync(int? id)
         {
@@ -144,6 +229,7 @@ namespace ForkliftHub.Services
                 .Include(p => p.Engine)
                 .Include(p => p.MastType)
                 .Include(p => p.MachineModel)
+                .Include(p => p.ProductImages)
                 .FirstOrDefaultAsync(p => p.Id == id);
         }
 
@@ -247,6 +333,6 @@ namespace ForkliftHub.Services
                 MastTypes = mastTypes
             };
         }
-    
+
     }
 }

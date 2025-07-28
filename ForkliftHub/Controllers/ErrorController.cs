@@ -1,5 +1,4 @@
 ﻿using ForkliftHub.ViewModels;
-using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ForkliftHub.Controllers

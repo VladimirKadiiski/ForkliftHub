@@ -60,6 +60,8 @@ namespace ForkliftHub.Models
         public int ProductTypeId { get; set; }
         public ProductType ProductType { get; set; } = null!;
 
+        public ICollection<ProductImage> ProductImages { get; set; } = new List<ProductImage>();
+
         public ICollection<Review> Reviews { get; set; } = new List<Review>();
     }
 }

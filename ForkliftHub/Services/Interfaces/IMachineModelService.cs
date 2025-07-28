@@ -1,7 +1,5 @@
 ﻿using ForkliftHub.ViewModels;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace ForkliftHub.Services.Interfaces
 {

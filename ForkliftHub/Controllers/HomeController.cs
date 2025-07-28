@@ -1,4 +1,3 @@
-using ForkliftHub.Models;
 using ForkliftHub.Services.Interfaces;
 using ForkliftHub.ViewModels;
 using Microsoft.AspNetCore.Authorization;

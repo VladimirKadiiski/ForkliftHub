@@ -4,7 +4,6 @@ using ForkliftHub.Models;
 using ForkliftHub.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace ForkliftHub.Api.Controllers
 {

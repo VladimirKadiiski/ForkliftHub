@@ -20,6 +20,8 @@ namespace ForkliftHub.Services.Interfaces
         Task AddProductAsync(Product product);
         Task UpdateProductAsync(Product product);
         Task DeleteProductAsync(int id);
+        Task<int> CleanupMissingProductImagesAsync();
+
         Task<bool> ProductExistsAsync(int id);
 
         Task<ProductFormViewModel> GetProductFormViewModelAsync(int? id = null);

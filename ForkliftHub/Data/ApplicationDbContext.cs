@@ -15,6 +15,7 @@ namespace ForkliftHub.Data
         public DbSet<ProductType> ProductTypes { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
+        public DbSet<ProductImage> ProductImages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

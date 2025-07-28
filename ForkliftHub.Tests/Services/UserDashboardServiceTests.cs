@@ -1,9 +1,7 @@
 ﻿using ForkliftHub.Data;
 using ForkliftHub.Models;
 using ForkliftHub.Services;
-using ForkliftHub.ViewModels;
 using Microsoft.EntityFrameworkCore;
-using Xunit;
 
 namespace ForkliftHub.Tests.Services
 {

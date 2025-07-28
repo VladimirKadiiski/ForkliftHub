@@ -1,9 +1,9 @@
 ﻿using FluentAssertions;
-using ForkliftHub.Services;
 using ForkliftHub.Data;
 using ForkliftHub.Models;
-using Microsoft.EntityFrameworkCore;
+using ForkliftHub.Services;
 using ForkliftHub.ViewModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace ForkliftHub.Tests.Services
 {
@@ -100,7 +100,7 @@ namespace ForkliftHub.Tests.Services
             var service = new BrandService(context);
             context.Brands.Add(new Brand { Name = "Exists" });
             await context.SaveChangesAsync();
-                        
+
             // Act
             var result = await service.BrandExistsAsync("Exists");
 
@@ -117,7 +117,7 @@ namespace ForkliftHub.Tests.Services
             var brand = new Brand { Name = "Unique" };
             context.Brands.Add(brand);
             await context.SaveChangesAsync();
-                        
+
             // Act
             var result = await service.BrandExistsAsync("Unique", excludeId: brand.Id);
 

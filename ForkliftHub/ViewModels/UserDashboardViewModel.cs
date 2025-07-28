@@ -1,5 +1,4 @@
 ﻿using ForkliftHub.Models;
-using System.Collections.Generic;
 
 namespace ForkliftHub.ViewModels
 {

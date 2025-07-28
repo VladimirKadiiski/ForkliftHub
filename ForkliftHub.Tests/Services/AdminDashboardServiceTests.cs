@@ -37,7 +37,7 @@ namespace ForkliftHub.Tests.Services
             context.Reviews.AddRange(
                 new Review { Rating = 5, Comment = "Great!", UserId = "U1" },
                 new Review { Rating = 4, Comment = "Good!", UserId = "U2" },
-                new Review { Rating = 3, Comment = "Okay!" , UserId = "U3" });
+                new Review { Rating = 3, Comment = "Okay!", UserId = "U3" });
 
             await context.SaveChangesAsync();
 

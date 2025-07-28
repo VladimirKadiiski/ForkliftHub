@@ -144,7 +144,7 @@ namespace ForkliftHub.Tests.Services
             var result = await service.CategoryExistsAsync("Unique", excludeId: category.Id);
 
             // Assert
-            Assert.False(result); 
+            Assert.False(result);
         }
     }
 }

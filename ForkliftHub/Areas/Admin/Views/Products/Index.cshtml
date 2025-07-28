@@ -68,6 +68,20 @@
     </div>
 </form>
 
+@if (TempData["CleanupMessage"] != null)
+{
+    <div class="alert alert-info">
+        @TempData["CleanupMessage"]
+    </div>
+}
+
+<form asp-action="CleanupImages" method="post" class="mb-4">
+    <button type="submit" class="btn btn-outline-warning">
+        🧹 Cleanup Missing Images
+    </button>
+</form>
+
+
 <table class="table table-hover table-bordered align-middle">
     <thead class="table-light">
         <tr>
